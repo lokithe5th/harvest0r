@@ -6,23 +6,16 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "erc721a/contracts/ERC721A.sol";
 // https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
-contract Seeds {
+contract Seeds is ERC721A {
+  uint256 private mintCost;
 
-  event SetPurpose(address sender, string purpose);
-
-  string public purpose = "Building Unstoppable Apps!!!";
-
-  constructor() payable {
-    // what should we do on deploy?
+  constructor() ERC721A("Seeds", "SEEDS") {
+    mintCost = 0.069 ether;
   }
 
-  function setPurpose(string memory newPurpose) public payable {
-      purpose = newPurpose;
-      console.log(msg.sender,"set purpose to",purpose);
-      emit SetPurpose(msg.sender, purpose);
+  function mint(uint256 quantity) external payable {
+      // `_mint`'s second argument now takes in a `quantity`, not a `tokenId`.
+      _mint(msg.sender, quantity);
   }
 
-  // to support receiving ETH by default
-  receive() external payable {}
-  fallback() external payable {}
 }
