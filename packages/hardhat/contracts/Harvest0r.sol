@@ -3,21 +3,25 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-contract YourContract {
+contract Harvest0r {
+  using SafeERC20 for IERC20;
+  address private seedlings;
 
-  event SetPurpose(address sender, string purpose);
-
-  string public purpose = "Building Unstoppable Apps!!!";
-
-  constructor() payable {
-    // what should we do on deploy?
+  constructor(address seeds) payable {
+    seedlings = seeds;
   }
 
-  function setPurpose(string memory newPurpose) public payable {
-      purpose = newPurpose;
-      console.log(msg.sender,"set purpose to",purpose);
-      emit SetPurpose(msg.sender, purpose);
+  function sellToken(
+    uint256 tokenID,
+    address token,
+    uint256 value
+  ) external {
+    // require an NFT with an available charge
+    
+    IERC20(token).safeTransferFrom(msg.sender, address(this), value);
   }
 
   // to support receiving ETH by default

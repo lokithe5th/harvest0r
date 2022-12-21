@@ -8,6 +8,7 @@ import "erc721a/contracts/ERC721A.sol";
 
 contract Seeds is ERC721A {
   uint256 private mintCost;
+  address private harvest0r;
 
   constructor() ERC721A("Seeds", "SEEDS") {
     mintCost = 0.069 ether;
@@ -18,4 +19,12 @@ contract Seeds is ERC721A {
       _mint(msg.sender, quantity);
   }
 
+  function useCharge(uint256 tokenID) external {
+    require(msg.sender == harvest0r, "Only harvestor");
+    //  consume an NFTs charge
+  }
+
+  function recharge(uint256 tokenID) external {
+    //  replenish an NFTs charges
+  }
 }
