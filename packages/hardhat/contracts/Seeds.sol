@@ -39,7 +39,7 @@ contract Seeds is ERC721A {
   }
 
   function generateSVGofTokenById(uint256 tokenId) public view returns (string memory svg) {
-    svg = string(abi.encodePacked(svgParts[0], renderCharge(tokenId), svgParts[1], svgParts[2]));
+    svg = string(abi.encodePacked(svgParts[0], 'Charges: ', (uint256(charges[tokenId])).toString(), svgParts[1], svgParts[2]));
   }
 
   function useCharge(uint256 tokenId) external {
@@ -54,7 +54,7 @@ contract Seeds is ERC721A {
     charges[tokenId] = 9;
   }
 
-  function renderCharge(uint256 tokenId) public view returns (string memory) {
-    return string(abi.encodePacked('Charges: ',(uint256(charges[tokenId])).toString()));
+  function viewCharge(uint256 tokenId) public view returns (uint8) {
+    return charges[tokenId];
   }
 }
