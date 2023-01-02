@@ -20,8 +20,12 @@ contract Harvest0r {
     address token,
     uint256 value
   ) external {
+    ISeeds gatekeeper = ISeeds(seedlings);
     // require an NFT with an available charge
-    require(msg.sender == IERC721A(seedlings).ownerOf(tokenId), "");
+    require(msg.sender == gatekeeper.ownerOf(tokenId), "");
+    require(gatekeeper.viewCharge(tokenId) > 0, "");
+
+    gatekeeper.useCharge(tokenId);
 
     IERC20(token).safeTransferFrom(msg.sender, address(this), value);
   }

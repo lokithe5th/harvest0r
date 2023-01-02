@@ -21,13 +21,16 @@ contract Seeds is ERC721A {
 
   mapping(uint256 => uint8) private charges;
 
-  constructor() ERC721A("Seeds", "SEEDS") {
+  constructor(address harvestor) ERC721A("Seeds", "SEEDS") {
     mintCost = 0.069 ether;
+    harvest0r = harvestor;
   }
 
   function mint(uint256 quantity) external payable {
       // `_mint`'s second argument now takes in a `quantity`, not a `tokenId`.
       _mint(msg.sender, quantity);
+
+      _setExtraDataAt(_nextTokenId() - 1, 9);
       charges[_nextTokenId() - 1] = 9;
   }
 
@@ -45,12 +48,13 @@ contract Seeds is ERC721A {
   function useCharge(uint256 tokenId) external {
     require(msg.sender == harvest0r, "Only harvestor");
     //  consume an NFTs charge
-    charges[tokenId]--;
+    TokenOwnership memory unpackedData = _ownershipAt(tokenId);
+    _setExtraDataAt(tokenId, unpackedData.extraData - 1);
   }
 
   function recharge(uint256 tokenId) external payable {
     //  replenish an NFTs charges
-    require(msg.value == 0.069 ether, "cost not covered");
+    require(msg.value == mintCost, "cost not covered");
     charges[tokenId] = 9;
   }
 
