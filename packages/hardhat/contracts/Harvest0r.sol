@@ -9,18 +9,25 @@ import "./interfaces/ISeeds.sol";
 
 contract Harvest0r {
   using SafeERC20 for IERC20;
-  address private seedlings;
+  address private seeds;
+  address private token;
 
-  constructor(address seeds) payable {
+/*
+  constructor(address seeds, address _token) payable {
     seedlings = seeds;
+    token = _token;
+  } */
+
+  function init(address _seeds, address _token) external {
+    seeds = _seeds;
+    token = _token;
   }
 
   function sellToken(
     uint256 tokenId,
-    address token,
     uint256 value
   ) external {
-    ISeeds gatekeeper = ISeeds(seedlings);
+    ISeeds gatekeeper = ISeeds(seeds);
     // require an NFT with an available charge
     require(msg.sender == gatekeeper.ownerOf(tokenId), "");
     require(gatekeeper.viewCharge(tokenId) > 0, "");

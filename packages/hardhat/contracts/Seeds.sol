@@ -11,7 +11,7 @@ import "erc721a/contracts/ERC721A.sol";
 contract Seeds is ERC721A {
   using Strings for uint256;
   uint256 private mintCost;
-  address private harvest0r;
+  address private harvest0rFactory;
 
   string[3] internal svgParts = [
         '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 400"><style>.base { fill: white; font-family: monospace; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" /><text x="10" y="20" class="base">',
@@ -19,19 +19,20 @@ contract Seeds is ERC721A {
         '</text></svg>'
   ];
 
-  mapping(uint256 => uint8) private charges;
+  //mapping(uint256 => uint8) private charges;
 
   constructor(address harvestor) ERC721A("Seeds", "SEEDS") {
     mintCost = 0.069 ether;
-    harvest0r = harvestor;
+    harvest0rFactory = harvestor;
   }
 
   function mint(uint256 quantity) external payable {
-      // `_mint`'s second argument now takes in a `quantity`, not a `tokenId`.
-      _mint(msg.sender, quantity);
+    require(msg.value == mintCost, "Not paid");
+    // `_mint`'s second argument now takes in a `quantity`, not a `tokenId`.
+    _mint(msg.sender, quantity);
 
-      _setExtraDataAt(_nextTokenId() - 1, 9);
-      charges[_nextTokenId() - 1] = 9;
+    _setExtraDataAt(_nextTokenId() - 1, 9);
+    //charges[_nextTokenId() - 1] = 9;
   }
 
   function tokenURI(uint256 tokenId) public view override returns (string memory json) {
@@ -42,7 +43,8 @@ contract Seeds is ERC721A {
   }
 
   function generateSVGofTokenById(uint256 tokenId) public view returns (string memory svg) {
-    svg = string(abi.encodePacked(svgParts[0], 'Charges: ', (uint256(charges[tokenId])).toString(), svgParts[1], svgParts[2]));
+    TokenOwnership memory unpackedData = _ownershipAt(tokenId);
+    svg = string(abi.encodePacked(svgParts[0], 'Charges: ', (uint256(unpackedData.extraData)).toString(), svgParts[1], svgParts[2]));
   }
 
   function useCharge(uint256 tokenId) external {
@@ -55,10 +57,12 @@ contract Seeds is ERC721A {
   function recharge(uint256 tokenId) external payable {
     //  replenish an NFTs charges
     require(msg.value == mintCost, "cost not covered");
-    charges[tokenId] = 9;
+    _setExtraDataAt(tokenId, uint24(9));
+    //charges[tokenId] = 9;
   }
 
-  function viewCharge(uint256 tokenId) public view returns (uint8) {
-    return charges[tokenId];
+  function viewCharge(uint256 tokenId) public view returns (uint24) {
+    TokenOwnership memory unpackedData = _ownershipAt(tokenId);
+    return unpackedData.extraData;
   }
 }
