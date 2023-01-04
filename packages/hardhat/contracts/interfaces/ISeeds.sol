@@ -8,6 +8,8 @@ interface ISeeds is IERC721A {
 
   /// The calling contract is not a Harvest0r
   error InvalidHarvestor();
+  /// Mint quantity exceeded
+  error MaxMintExceeded();
   /// The `msg.value` is too low
   error UnsufficientValue();
   /// The payment for tokens has failed

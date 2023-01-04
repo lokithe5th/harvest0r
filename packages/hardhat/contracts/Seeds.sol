@@ -92,13 +92,13 @@ contract Seeds is ISeeds, ERC721A, Ownable {
 
   /// @inheritdoc	ISeeds
   function mint(uint256 quantity) external payable {
-    if (msg.value < mintCost) {
-      revert UnsufficientValue();
-    }
+    if (msg.value < mintCost) {revert UnsufficientValue();}
+    if (quantity > 5) {revert MaxMintExceeded();}
+
     // `_mint`'s second argument now takes in a `quantity`, not a `tokenId`.
     _safeMint(msg.sender, quantity);
-    _setExtraDataAt(_nextTokenId() - 1, 9);
     fees += (msg.value / 10);
+
   }
 
   /// @inheritdoc	ERC721A
@@ -121,9 +121,7 @@ contract Seeds is ISeeds, ERC721A, Ownable {
 
   /// @inheritdoc	ISeeds
   function useCharge(uint256 tokenId) external {
-    if (!factory.isHarvestor(msg.sender)) {
-      revert InvalidHarvestor();
-    }
+    if (!factory.isHarvestor(msg.sender)) {revert InvalidHarvestor();}
 
     /// Consume a `SEEDS` NFT charge
     TokenOwnership memory unpackedData = _ownershipAt(tokenId);
@@ -131,19 +129,15 @@ contract Seeds is ISeeds, ERC721A, Ownable {
 
     (bool sent, ) = unpackedData.addr.call{value: mintCost / 10}("");
 
-    if (!sent) {
-      revert PaymentFailed();
-    }
+    if (!sent) {revert PaymentFailed();}
 
   }
 
   /// @inheritdoc	ISeeds
   function recharge(uint256 tokenId) external payable {
     //  replenish an NFTs charges
-    if (msg.value < mintCost) {
-      revert UnsufficientValue();
-    }
-    require(msg.value == mintCost, "cost not covered");
+    if (msg.value < mintCost) {revert UnsufficientValue();}
+
     _setExtraDataAt(tokenId, uint24(9));
     fees += (msg.value / 10);
   }
@@ -160,15 +154,28 @@ contract Seeds is ISeeds, ERC721A, Ownable {
 
   /// @inheritdoc	ISeeds
   function withdrawFees(address target, uint256 value) external onlyOwner() returns (bool sent) {
-    if (fees < value) {
-      revert InvalidAmount();
-    }
+    if (fees < value) {revert InvalidAmount();}
 
     fees -= value;
     (sent, ) = target.call{value: value}("");
 
-    if (!sent) {
-      revert PaymentFailed();
+    if (!sent) {revert PaymentFailed();}
+
+  }
+
+  function _afterTokenTransfers(
+      address from,
+      address to,
+      uint256 startTokenId,
+      uint256 quantity
+  ) internal override {
+    if (from == address(0)) {
+       for (uint8 i; i < quantity; i++) {
+        /// Fix for `OwnershipNotInitializedForExtraData` error
+        _initializeOwnershipAt(startTokenId + i);
+        /// Set the initial charges
+        _setExtraDataAt(startTokenId + i, 9);
+      }
     }
   }
 }
