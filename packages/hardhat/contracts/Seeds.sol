@@ -78,12 +78,12 @@ contract Seeds is ISeeds, ERC721A, Ownable {
    ******************************************************************/
 
   /// @notice Initial set up of the `Seeds Access Voucher NFT` 
-  /// @param harvestor Address of the Harvestor Factory
-  constructor(address harvestor) ERC721A("Seeds Access Voucher", "SEEDS") {
+  /// @param harvestorFactory Address of the Harvestor Factory
+  constructor(address harvestorFactory) ERC721A("Seeds Access Voucher", "SEEDS") {
     mintCost = 0.069 ether;
     maxMint = 5;
     maxSupply = 1000;
-    factory = IHarvest0rFactory(harvestor);
+    factory = IHarvest0rFactory(harvestorFactory);
   }
 
   /******************************************************************
