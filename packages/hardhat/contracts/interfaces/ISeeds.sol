@@ -15,6 +15,10 @@ interface ISeeds is IERC721A {
   /// Invalid amount to withdraw
   error InvalidAmount();
 
+  /******************************************************************
+   *                         NFT FUNCTIONALITY                      *
+   ******************************************************************/
+
   /// @notice Mints a `Seeds Access Voucher` to the `msg.sender`
   /// @dev `msg.value` must be greater than `mintCost`
   /// @dev `quantity` must be less than or equal to `maxMint`
@@ -25,6 +29,10 @@ interface ISeeds is IERC721A {
   /// @param tokenId The target `tokenId`
   /// @return svg The SVG image corresponding to the given `tokenId`
   function generateSVGofTokenById(uint256 tokenId) external view returns (string memory svg);
+
+  /******************************************************************
+   *                         SPECIAL FUNCTIONS                      *
+   ******************************************************************/
 
   /// @notice Allows an `Field` contract to use a `SEEDS` charge
   /// @dev Consuming a charge decrements the target `tokenId` charge
@@ -41,6 +49,10 @@ interface ISeeds is IERC721A {
   /// @param tokenId The target `tokenId`
   /// @return uint24 The amount of charges available for a given `tokenId`
   function viewCharge(uint256 tokenId) external view returns (uint24);
+
+  /******************************************************************
+   *                         OWNER FUNCTIONS                        *
+   ******************************************************************/
 
   /// @notice Allows `owner` to withdraw accumulated fees
   /// @param target The account where ether must be withdrawn to

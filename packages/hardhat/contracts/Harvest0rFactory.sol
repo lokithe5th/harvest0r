@@ -41,40 +41,42 @@ contract Harvest0rFactory is IHarvest0rFactory, Ownable {
    *                            STORAGE                             *
    ******************************************************************/
 
-  address private implementation;
-  address private seeds;
-
-  mapping(address => address) private fields;
+  /// The address of the `Harvest0r` implementation
+  address private harvestorMaster;
+  /// The address of the `Seeds Access Voucher` NFT
+  address private seedsNft;
+  /// Mapping of token address to `Harvest0r` contract
+  mapping(address => address) private harvestors;
 
   /******************************************************************
    *                         CONSTRUCTOR                            *
    ******************************************************************/
 
-  constructor(address _implementation, address _seeds) payable {
-    implementation = _implementation;
-    seeds = _seeds;
+  /// @param implementation The address of the MasterCopy for Harvestors
+  /// @param seeds The address for the `Seeds Access Voucher` NFTs
+  constructor(address implementation, address seeds) payable {
+    harvestorMaster = implementation;
+    seedsNft = seeds;
   }
 
   /******************************************************************
-   *                 FIELD-RELATED FUNCTIONALITY                    *
+   *                 HARVST0R-RELATED FUNCTIONALITY                 *
    ******************************************************************/
 
-  function newField(address targetToken) external returns (address field) {
-    if (fields[targetToken] != address(0)) {
+  /// @inheritdoc IHarvest0rFactory
+  function newHarvestor(address targetToken) external returns (address harvestor) {
+    if (harvestors[targetToken] != address(0)) {
       revert Exists();
     }
 
-    field = Clones.clone(implementation);
-    IHarvest0r(field).init(seeds, targetToken);
+    harvestor = Clones.clone(harvestorMaster);
+    IHarvest0r(harvestor).init(seedsNft, targetToken);
 
-    fields[targetToken] = field;
+    harvestors[targetToken] = harvestor;
   }
 
-  function isField(address field) external view returns (bool) {
-    return fields[field] != address(0) ? true : false;
+  /// @inheritdoc IHarvest0rFactory
+  function isHarvestor(address target) external view returns (bool) {
+    return harvestors[target] != address(0) ? true : false;
   }
-
-  // to support receiving ETH by default
-  receive() external payable {}
-  fallback() external payable {}
 }

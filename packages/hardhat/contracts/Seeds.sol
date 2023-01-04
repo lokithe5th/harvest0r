@@ -16,6 +16,12 @@ pragma solidity 0.8.17;
   to Harvest0r contracts to allow tax-loss harvesting for
   tokens which have legitimately lost their value.
 
+  Access to one sale consumes one charge of a SEEDS token's charges.
+  The Harvest0r contract will make a market and buy your tokens for 
+  0.0069 ether. 
+
+  The NFT's charges can be replenished.
+
   Disclaimer: Every user must ensure they adhere to the tax laws of
   their local jurisdiction. The creator of this contract cannot accept
   liability for users' actions when using this piece of software. 
@@ -90,7 +96,7 @@ contract Seeds is ISeeds, ERC721A, Ownable {
       revert UnsufficientValue();
     }
     // `_mint`'s second argument now takes in a `quantity`, not a `tokenId`.
-    _mint(msg.sender, quantity);
+    _safeMint(msg.sender, quantity);
     _setExtraDataAt(_nextTokenId() - 1, 9);
     fees += (msg.value / 10);
   }
@@ -115,7 +121,7 @@ contract Seeds is ISeeds, ERC721A, Ownable {
 
   /// @inheritdoc	ISeeds
   function useCharge(uint256 tokenId) external {
-    if (!factory.isField(msg.sender)) {
+    if (!factory.isHarvestor(msg.sender)) {
       revert InvalidHarvestor();
     }
 
@@ -140,7 +146,6 @@ contract Seeds is ISeeds, ERC721A, Ownable {
     require(msg.value == mintCost, "cost not covered");
     _setExtraDataAt(tokenId, uint24(9));
     fees += (msg.value / 10);
-    //charges[tokenId] = 9;
   }
 
   /// @inheritdoc	ISeeds
@@ -148,6 +153,10 @@ contract Seeds is ISeeds, ERC721A, Ownable {
     TokenOwnership memory unpackedData = _ownershipAt(tokenId);
     return unpackedData.extraData;
   }
+
+  /******************************************************************
+   *                         OWNER FUNCTIONS                        *
+   ******************************************************************/
 
   /// @inheritdoc	ISeeds
   function withdrawFees(address target, uint256 value) external onlyOwner() returns (bool sent) {

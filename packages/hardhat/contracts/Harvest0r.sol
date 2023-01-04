@@ -29,16 +29,17 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./interfaces/ISeeds.sol";
+import "./interfaces/IHarvest0r.sol";
 
-contract Harvest0r is Ownable {
+contract Harvest0r is IHarvest0r, Ownable {
   using SafeERC20 for IERC20;
 
   /******************************************************************
    *                           STORAGE                              *
    ******************************************************************/
 
-  /// The address for the `Seeds Access Voucher` NFT
-  address private seeds;
+  /// The `Seeds Access Voucher` NFT
+  ISeeds private seeds;
   /// The token to be harvested
   IERC20 private token;
 
@@ -46,11 +47,9 @@ contract Harvest0r is Ownable {
    *                         INITIALIZE                             *
    ******************************************************************/
 
-  /// @notice Initializes the `Harvest0r` field for the specified token
-  /// @param _seeds The address for the `SEEDS` NFT
-  /// @param _token The target token to be harvested
+  /// @inheritdoc IHarvest0r
   function init(address _seeds, address _token) external {
-    seeds = _seeds;
+    seeds = ISeeds(_seeds);
     token = IERC20(_token);
   }
 
@@ -58,20 +57,16 @@ contract Harvest0r is Ownable {
    *                    HARVEST0R FUNCTIONALITY                     *
    ******************************************************************/
 
-  /// @notice Allows a user to sell a token for 
-  /// @dev The `Havest0r` makes a market and buys a token for `buyAmount`
-  /// @param tokenId The target `tokenId` which loses a charge
-  /// @param value The amount of `token` to sell for `buyAmount`
+  /// @inheritdoc IHarvest0r
   function sellToken(
     uint256 tokenId,
     uint256 value
   ) external {
-    ISeeds gatekeeper = ISeeds(seeds);
     // require an NFT with an available charge
-    require(msg.sender == gatekeeper.ownerOf(tokenId), "");
-    require(gatekeeper.viewCharge(tokenId) > 0, "");
+    require(msg.sender == seeds.ownerOf(tokenId), "");
+    require(seeds.viewCharge(tokenId) > 0, "");
 
-    gatekeeper.useCharge(tokenId);
+    seeds.useCharge(tokenId);
 
     token.safeTransferFrom(msg.sender, address(this), value);
   }
@@ -80,9 +75,7 @@ contract Harvest0r is Ownable {
    *                      OWNER FUNCTIONS                           *
    ******************************************************************/
 
-  /// @notice Transfers the bought tokens to `target`
-  /// @param target The address to which to transfer the tokens
-  /// @param value The amount of tokens to transfer to `target`
+  /// @inheritdoc IHarvest0r
   function transferToken(address target, uint256 value) external onlyOwner() {
     token.safeTransfer(target, value);
   }
