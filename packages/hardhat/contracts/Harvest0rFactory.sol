@@ -46,7 +46,9 @@ contract Harvest0rFactory is IHarvest0rFactory, Ownable {
   /// The address of the `Seeds Access Voucher` NFT
   address private seedsNft;
   /// Mapping of token address to `Harvest0r` contract
-  mapping(address => address) private harvestors;
+  mapping(address => address) private tokenHarvestors;
+  /// Mapping containing harvestor addresses
+  mapping(address => bool) private harvestors;
 
   /******************************************************************
    *                         CONSTRUCTOR                            *
@@ -65,18 +67,19 @@ contract Harvest0rFactory is IHarvest0rFactory, Ownable {
 
   /// @inheritdoc IHarvest0rFactory
   function newHarvestor(address targetToken) external returns (address harvestor) {
-    if (harvestors[targetToken] != address(0)) {
+    if (tokenHarvestors[targetToken] != address(0)) {
       revert Exists();
     }
 
     harvestor = Clones.clone(harvestorMaster);
     IHarvest0r(harvestor).init(seedsNft, targetToken);
 
-    harvestors[targetToken] = harvestor;
+    tokenHarvestors[targetToken] = harvestor;
+    harvestors[harvestor] = true;
   }
 
   /// @inheritdoc IHarvest0rFactory
   function isHarvestor(address target) external view returns (bool) {
-    return harvestors[target] != address(0) ? true : false;
+    return harvestors[target];
   }
 }

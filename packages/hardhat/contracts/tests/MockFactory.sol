@@ -35,14 +35,13 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 
 contract MockFactory {
-  mapping(address => address) private harvestors;
+  mapping(address => bool) private harvestors;
 
-
-  function newHarvestor(address targetToken) external returns (address harvestor) {
-    harvestors[targetToken] = harvestor;
+  constructor() {
+    harvestors[msg.sender] = true;
   }
 
   function isHarvestor(address target) external view returns (bool) {
-    return harvestors[target] != address(0) ? true : false;
+    return harvestors[target];
   }
 }

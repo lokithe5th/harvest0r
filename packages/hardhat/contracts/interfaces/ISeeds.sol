@@ -16,6 +16,10 @@ interface ISeeds is IERC721A {
   error PaymentFailed();
   /// Invalid amount to withdraw
   error InvalidAmount();
+  /// Target token does not exist
+  error NotExists();
+  /// The target token doesn't have enough charge left
+  error NoCharge();
 
   /******************************************************************
    *                         NFT FUNCTIONALITY                      *

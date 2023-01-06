@@ -52,6 +52,17 @@ contract Seeds is ISeeds, ERC721A, Ownable {
   using Strings for uint256;
 
   /******************************************************************
+   *                          EVENTS                                *
+   ******************************************************************/
+
+  /// The `tokenId` has been recharged
+  event Recharged(uint256 indexed tokenId);
+  /// Charge used
+  event ChargeUsed(uint256 indexed tokenId);
+  /// Accumulated fees withdrawn
+  event WithdrawFees(address indexed to, uint256 indexed amount);
+
+  /******************************************************************
    *                         STORAGE                                *
    ******************************************************************/
 
@@ -122,6 +133,8 @@ contract Seeds is ISeeds, ERC721A, Ownable {
   /// @inheritdoc	ISeeds
   function useCharge(uint256 tokenId) external {
     if (!factory.isHarvestor(msg.sender)) {revert InvalidHarvestor();}
+    if (tokenId >= _nextTokenId()) {revert NotExists();}
+    if (viewCharge(tokenId) == 0) {revert NoCharge();}
 
     /// Consume a `SEEDS` NFT charge
     TokenOwnership memory unpackedData = _ownershipAt(tokenId);
@@ -131,6 +144,7 @@ contract Seeds is ISeeds, ERC721A, Ownable {
 
     if (!sent) {revert PaymentFailed();}
 
+    emit ChargeUsed(tokenId);
   }
 
   /// @inheritdoc	ISeeds
@@ -140,10 +154,14 @@ contract Seeds is ISeeds, ERC721A, Ownable {
 
     _setExtraDataAt(tokenId, uint24(9));
     fees += (msg.value / 10);
+
+    emit Recharged(tokenId);
   }
 
   /// @inheritdoc	ISeeds
   function viewCharge(uint256 tokenId) public view returns (uint24) {
+    if (tokenId >= _nextTokenId()) {revert NotExists();}
+
     TokenOwnership memory unpackedData = _ownershipAt(tokenId);
     return unpackedData.extraData;
   }
@@ -161,8 +179,10 @@ contract Seeds is ISeeds, ERC721A, Ownable {
 
     if (!sent) {revert PaymentFailed();}
 
+    emit WithdrawFees(target, value);
   }
 
+  /// @inheritdoc ERC721A
   function _afterTokenTransfers(
       address from,
       address to,
@@ -177,5 +197,15 @@ contract Seeds is ISeeds, ERC721A, Ownable {
         _setExtraDataAt(startTokenId + i, 9);
       }
     }
+  }
+
+  /******************************************************************
+   *                       VIEW FUNCTIONS                           *
+   ******************************************************************/
+
+  /// @notice Returns the accumulated fees
+  /// @return uint256 The amount of ether accumulated
+  function viewFees() external view returns (uint256) {
+    return fees;
   }
 }
