@@ -2,6 +2,7 @@ const { ethers } = require("hardhat");
 const { expect } = require("chai");
 
 const init = require('../test-init.js');
+const { parseEther } = require("ethers/lib/utils.js");
 
 let seedsContract;
 let seedsInterface;
@@ -13,6 +14,8 @@ let user1;
 let user2;
 
 let harvestor;
+let token;
+let seeds;
 
 
 describe("Harvestor Contract", function () {
@@ -25,7 +28,9 @@ describe("Harvestor Contract", function () {
     user1 = setup.roles.user1;
     user2 = setup.roles.user2;
 
-    harvestor = await setup.harvestor;
+    harvestor = await init.harvestor(setup);
+    token = await init.token(setup);
+    seeds = await init.mockSeeds(setup);
 
   });
 
@@ -33,16 +38,47 @@ describe("Harvestor Contract", function () {
   before("Setup", async () => {
     //setTimeout(await setupTests(), 2000);
     await setupTests();
+
+    await seeds.mint(5, {value: parseEther("1")});
+    await token.transfer(user1.address, parseEther("10"));
+
   });
 
   describe("Harvestor", function () {
     it("Should initialize harvest0r", async function () {
-
+      await expect(harvestor.init(seeds.address, token.address)).
+        to.emit(harvestor, "Initialized").
+          withArgs(1);
     });
 
-    describe("mint()", function () {
-      it("Should be able to mint one NFT", async function () {
+    describe("sellToken()", function () {
+      it("Should revert if not the Seeds NFT owner", async function () {
+        await expect(harvestor.connect(user1).sellToken(1, 1)).to.be.reverted;
+      });
 
+      it("Should be able to sell tokens to the harvestor", async function () {
+        await token.approve(harvestor.address, parseEther("1"));
+        await expect(harvestor.sellToken(1, parseEther("1"))).to.emit(harvestor, "Sale");
+      });
+    });
+
+    describe("transferToken()", function () {
+      it("Should revert if not the owner", async function () {
+
+      });
+
+      it("Should revert if value greater than balance", async function () {
+
+      });
+
+      it("Should be able to transfer tokens to the target address", async function () {
+
+      });
+    });
+
+    describe("viewToken()", function () {
+      it("Should return the correct token", async function () {
+        expect(await harvestor.viewToken()).to.equal(token.address);
       });
     });
 

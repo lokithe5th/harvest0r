@@ -19,7 +19,23 @@ const harvestor = async (setup) => {
     return harvestorContract;
 }
 
+const token = async (setup) => {
+  const tokenFactory = await ethers.getContractFactory("MockToken");
+  const token = await tokenFactory.deploy();
+
+  return token;
+}
+
+const mockSeeds = async (setup) => {
+  const mockSeedFactory = await ethers.getContractFactory("MockSeeds");
+  let mockSeeds = await mockSeedFactory.deploy();
+
+  return mockSeeds;
+}
+
 module.exports = {
   initialize,
-  harvestor
+  harvestor,
+  token,
+  mockSeeds
 }; 
