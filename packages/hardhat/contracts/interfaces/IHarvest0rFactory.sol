@@ -8,7 +8,7 @@ interface IHarvest0rFactory {
    ******************************************************************/
 
   /// The Harvestor contract for this token exists
-  //error Exists();
+  error Exists();
 
   /******************************************************************
    *                 HARVST0R-RELATED FUNCTIONALITY                 *

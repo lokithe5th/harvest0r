@@ -2,7 +2,6 @@ pragma solidity 0.8.17;
 //SPDX-License-Identifier: MIT
 
 import "erc721a/contracts/IERC721A.sol";
-// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
 interface ISeeds is IERC721A {
 

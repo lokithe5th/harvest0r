@@ -1,7 +1,12 @@
 pragma solidity 0.8.17;
 //SPDX-License-Identifier: MIT
 
-/**
+/** 
+  @title Harvest0rFactory
+  @author lourens.eth
+  @notice The Harvest0r Factory is responsible for creating new `Harvest0r`-token pairs.
+          Harvest0rs allow holders of an access token to access a market for tokens.
+
  __    __                                                      __       ______
 /  |  /  |                                                    /  |     /      \
 $$ |  $$ |  ______    ______   __     __  ______    _______  _$$ |_   /$$$$$$  |  ______
@@ -25,14 +30,19 @@ $$/     $$$$$$$/  $$$$$$$/    $$$$/   $$$$$$/  $$/        $$$$$$$ |
                                                          /  \__$$ |
                                                          $$    $$/
                                                           $$$$$$/
-
-  The Harvest0r Factory is responsible for creating new `Harvest0r` contracts
-  for token pairs.
  */
 
-import "hardhat/console.sol";
+/******************************************************************
+ *                            IMPORTS                             *
+ ******************************************************************/
+
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
+
+/******************************************************************
+ *                        INTERFACES                              *
+ ******************************************************************/
+
 import "./interfaces/IHarvest0r.sol";
 import "./interfaces/IHarvest0rFactory.sol";
 
@@ -43,8 +53,6 @@ contract Harvest0rFactory is IHarvest0rFactory, Ownable {
   
   /// A new Token-Harvestor has bee been deployed
   event HarvestorDeployed(address indexed token, address indexed harvestor);
-
-  error Exists();
 
   /******************************************************************
    *                            STORAGE                             *
@@ -76,9 +84,7 @@ contract Harvest0rFactory is IHarvest0rFactory, Ownable {
 
   /// @inheritdoc IHarvest0rFactory
   function newHarvestor(address targetToken) external returns (address harvestor) {
-    if (tokenHarvestors[targetToken] != address(0)) {
-      revert Exists();
-    }
+    if (tokenHarvestors[targetToken] != address(0)) {revert Exists();}
 
     harvestor = Clones.clone(harvestorMaster);
     IHarvest0r(harvestor).init(seedsNft, targetToken);

@@ -4,16 +4,36 @@ const { expect } = require("chai");
 const init = require('../test-init.js');
 const { parseEther } = require("ethers/lib/utils.js");
 
+//  Users
 let root;
 let user1;
 let user2;
 
+//  Implementation contract
 let harvestor;
-let token;
+
+//  Tokens
+let tokenOne;
+let tokenTwo;
+
+//  NFT
 let seeds;
+
+//  Factory
 let harvestorFactory;
 
-let testHarvestor;
+/**
+ * Happy path
+ * 
+ * 1) Deploy the Harvestor Implementation contract
+ * 2) Deploy the Seeds Access Voucher Contract
+ * 3) Deploy the HarvestorFactory
+ * 4) Deploy two MockTokens
+ * 5) Mint 10 Seeds NFTs across two accounts
+ * 6) Deploy two Harvestors
+ * 7) Sell MockTokens from three accounts
+ * 8) Withdraw fees from the Harvestor contracts
+ */
 
 
 describe("HarvestorFactory Contract", function () {
@@ -26,12 +46,13 @@ describe("HarvestorFactory Contract", function () {
     user1 = setup.roles.user1;
     user2 = setup.roles.user2;
 
-    token = await init.token(setup);
+    tokenOne = await init.token(setup);
+    tokenTwo = await init.token(setup);
+
     seeds = await init.mockSeeds(setup);
+
     await init.harvestorFactory(setup);
-    
     harvestorFactory = setup.harvestorFactory.harvestorFactoryContract;
-    //harvestor = setup.harvestorFactory.mockImplementation;
 
   });
 
@@ -39,41 +60,64 @@ describe("HarvestorFactory Contract", function () {
   before("Setup", async () => {
     //setTimeout(await setupTests(), 2000);
     await setupTests();
-    await token.transfer(user1.address, parseEther("10"));
+
+    await tokenOne.transfer(user1.address, parseEther("10"));
+    await tokenOne.transfer(user2.address, parseEther("10"));
+
+    await tokenTwo.transfer(user1.address, parseEther("10"));
+    await tokenTwo.transfer(user2.address, parseEther("10"));
 
   });
 
-  describe("HarvestorFactory", function () {
-    it("Should setup harvest0r", async function () {
-        expect(await harvestorFactory.viewImplementation()).to.equal(harvestor.address);
+  describe("Integration - local environment", function () {
+    it("Should setup the contracts correctly", async function () {
+
     });
 
-    describe("newHarvestor()", function () {
+    describe("Minting NFTs", function () {
       it("Should deploy a new harvestor for a new token", async function () {
-        await expect(harvestorFactory.newHarvestor(token.address)).to.emit(harvestorFactory, "HarvestorDeployed");
+
       });
 
       it("Should revert if deploying a duplicate harvestor", async function () {
-        await expect(harvestorFactory.newHarvestor(token.address)).to.be.reverted;
+
       });
     });
 
-    describe("findHarvestor()", async function () {
+    describe("Deploy Harvestors", async function () {
       it("Should return the harvestor address", async function () {
-        testHarvestor = await harvestorFactory.findHarvestor(token.address);
-        expect(testHarvestor).to.not.be.null;
+
       });
     });
 
-    describe("isHarvestor()", function () {
+    describe("Sell tokens", function () {
       it("Should return false if not a harvestor", async function () {
-        expect(await harvestorFactory.isHarvestor(user2.address)).to.be.false;
+
       });
 
       it("Should return true if a harvestor", async function () {
-        expect(await harvestorFactory.isHarvestor(testHarvestor)).to.be.true;
+
       });
     });
 
+    describe("Withdraw Fees", function () {
+      it("Should return false if not a harvestor", async function () {
+
+      });
+
+      it("Should return true if a harvestor", async function () {
+
+      });
+    });
+
+    describe("Withdraw Tokens", function () {
+      it("Should return false if not a harvestor", async function () {
+
+      });
+
+      it("Should return true if a harvestor", async function () {
+
+      });
+    });
   });
 });
