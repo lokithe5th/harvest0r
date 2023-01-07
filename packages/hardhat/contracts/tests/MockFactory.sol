@@ -36,9 +36,13 @@ import "@openzeppelin/contracts/proxy/Clones.sol";
 
 contract MockFactory {
   mapping(address => bool) private harvestors;
+  address private implementation;
+  address private seeds;
 
-  constructor() {
+  constructor(address _implementation, address _seeds) {
     harvestors[msg.sender] = true;
+    implementation = _implementation;
+    seeds = _seeds;
   }
 
   function isHarvestor(address target) external view returns (bool) {

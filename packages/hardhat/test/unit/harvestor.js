@@ -4,11 +4,6 @@ const { expect } = require("chai");
 const init = require('../test-init.js');
 const { parseEther } = require("ethers/lib/utils.js");
 
-let seedsContract;
-let seedsInterface;
-let totalSupply;
-let mintCost = ethers.utils.parseEther("0.069");
-
 let root;
 let user1;
 let user2;
@@ -64,15 +59,17 @@ describe("Harvestor Contract", function () {
 
     describe("transferToken()", function () {
       it("Should revert if not the owner", async function () {
-
+        await expect(harvestor.connect(user1).transferToken(root.address, 1)).to.be.reverted;
       });
 
       it("Should revert if value greater than balance", async function () {
-
+        await expect(harvestor.transferToken(user1.address, parseEther("3"))).to.be.reverted;
       });
 
       it("Should be able to transfer tokens to the target address", async function () {
-
+        await expect(harvestor.transferToken(root.address, 1)).
+            to.emit(harvestor, "TokensTransferred").
+                withArgs(root.address, 1);
       });
     });
 

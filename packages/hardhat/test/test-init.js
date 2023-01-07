@@ -26,16 +26,38 @@ const token = async (setup) => {
   return token;
 }
 
-const mockSeeds = async (setup) => {
+const seeds = async (setup) => {
+    const seedFactory = await ethers.getContractFactory("Seeds");
+    
+}
+
+const mockSeeds = async () => {
   const mockSeedFactory = await ethers.getContractFactory("MockSeeds");
   let mockSeeds = await mockSeedFactory.deploy();
 
   return mockSeeds;
 }
 
+const harvestorFactory = async (setup) => {
+    let seeds = await mockSeeds();
+    let mockImplementation = await harvestor(setup);
+
+    const factory = await ethers.getContractFactory("Harvest0rFactory");
+    const harvestorFactoryContract = await factory.deploy(mockImplementation.address, seeds.address);
+
+    const harvestorFactory = {
+        harvestorFactoryContract,
+        mockImplementation
+    }
+
+    setup.harvestorFactory = harvestorFactory;
+    return harvestorFactory;
+};
+
 module.exports = {
   initialize,
   harvestor,
   token,
-  mockSeeds
+  mockSeeds,
+  harvestorFactory
 }; 
