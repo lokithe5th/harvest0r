@@ -55,9 +55,14 @@ contract Harvest0r is IHarvest0r, Ownable, Initializable {
    ******************************************************************/
 
   /// @inheritdoc IHarvest0r
-  function init(address _seeds, address _token) external initializer() {
+  function init(
+    address _seeds,
+    address _token,
+    address newOwner
+  ) external initializer() {
     seeds = ISeeds(_seeds);
     token = IERC20(_token);
+    _transferOwnership(newOwner);
   }
 
   /******************************************************************

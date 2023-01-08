@@ -30,7 +30,7 @@ describe("HarvestorFactory Contract", function () {
     seeds = await init.mockSeeds(setup);
     await init.harvestorFactory(setup);
     harvestorFactory = setup.harvestorFactory.harvestorFactoryContract;
-    harvestor = setup.harvestorFactory.mockImplementation;
+    harvestor = await init.harvestor(setup);
 
   });
 
@@ -44,7 +44,8 @@ describe("HarvestorFactory Contract", function () {
 
   describe("HarvestorFactory", function () {
     it("Should setup harvest0r", async function () {
-        expect(await harvestorFactory.viewImplementation()).to.equal(harvestor.address);
+      await harvestorFactory.setup(harvestor.address, seeds.address);
+      expect(await harvestorFactory.viewImplementation()).to.equal(harvestor.address);
     });
 
     describe("newHarvestor()", function () {

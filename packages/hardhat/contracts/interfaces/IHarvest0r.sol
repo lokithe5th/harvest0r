@@ -18,7 +18,8 @@ interface IHarvest0r {
   /// @notice Initializes the `Harvest0r` field for the specified token
   /// @param _seeds The address for the `SEEDS` NFT
   /// @param _token The target token to be harvested
-  function init(address _seeds, address _token) external;
+  /// @param owner The owner of the Harvestor
+  function init(address _seeds, address _token, address owner) external;
 
   /******************************************************************
    *                    HARVEST0R FUNCTIONALITY                     *

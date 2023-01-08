@@ -34,11 +34,15 @@ describe("Seeds NFT", function () {
   describe("Seeds", function () {
     it("Should deploy Seeds", async function () {
       const mockFactory = await ethers.getContractFactory("MockFactory");
-      let mock = await mockFactory.deploy();
+      
 
       const seeds = await ethers.getContractFactory("Seeds");
 
-      seedsContract = await seeds.deploy(mock.address);
+      seedsContract = await seeds.deploy();
+
+      let mock = await mockFactory.deploy(seedsContract.address, seedsContract.address);
+
+      await seedsContract.setup(mock.address);
     });
 
     describe("mint()", function () {

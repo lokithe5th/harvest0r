@@ -41,7 +41,7 @@ describe("Harvestor Contract", function () {
 
   describe("Harvestor", function () {
     it("Should initialize harvest0r", async function () {
-      await expect(harvestor.init(seeds.address, token.address)).
+      await expect(harvestor.init(seeds.address, token.address, root.address)).
         to.emit(harvestor, "Initialized").
           withArgs(1);
     });

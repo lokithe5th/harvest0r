@@ -88,7 +88,7 @@ contract Harvest0rFactory is IHarvest0rFactory, Ownable {
     if (tokenHarvestors[targetToken] != address(0)) {revert Exists();}
 
     harvestor = Clones.clone(harvestorMaster);
-    IHarvest0r(harvestor).init(seedsNft, targetToken);
+    IHarvest0r(harvestor).init(seedsNft, targetToken, owner());
 
     tokenHarvestors[targetToken] = harvestor;
     harvestors[harvestor] = true;

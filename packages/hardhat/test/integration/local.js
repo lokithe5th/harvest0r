@@ -68,7 +68,7 @@ describe("Integration - Local", function () {
     // Sets up the contracts
     await seeds.setup(harvestorFactory.address);
     await harvestorFactory.setup(harvestor.address, seeds.address);
-    await harvestor.init(seeds.address, seeds.address);
+    await harvestor.init(seeds.address, seeds.address, seeds.address);
 
 
   });
@@ -131,10 +131,6 @@ describe("Integration - Local", function () {
         await harvestorTwo.connect(user1).sellToken(1, parseEther("1"));
         await harvestorTwo.connect(user2).sellToken(6, parseEther("1"));
       });
-
-      it("Should return true if a harvestor", async function () {
-
-      });
     });
 
     describe("Withdraw Fees", function () {
@@ -142,19 +138,12 @@ describe("Integration - Local", function () {
         let accumulatedFees = await seeds.viewFees();
         await seeds.withdrawFees(root.address, accumulatedFees);
       });
-
-      it("Should return true if a harvestor", async function () {
-
-      });
     });
 
     describe("Withdraw Tokens", function () {
-      it("Should return false if not a harvestor", async function () {
-
-      });
-
-      it("Should return true if a harvestor", async function () {
-
+      it("Should allow the creator to withdraw token", async function () {
+        await harvestorOne.transferToken(root.address, parseEther("1"));
+        await harvestorTwo.transferToken(root.address, parseEther("1"));
       });
     });
   });
