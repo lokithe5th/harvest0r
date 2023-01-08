@@ -68,12 +68,13 @@ contract Harvest0rFactory is IHarvest0rFactory, Ownable {
   mapping(address => bool) private harvestors;
 
   /******************************************************************
-   *                         CONSTRUCTOR                            *
+   *                         Set up                                 *
    ******************************************************************/
 
+  /// @notice Sets up the Harvestor Factory
   /// @param implementation The address of the MasterCopy for Harvestors
   /// @param seeds The address for the `Seeds Access Voucher` NFTs
-  constructor(address implementation, address seeds) payable {
+  function setup(address implementation, address seeds) external {
     harvestorMaster = implementation;
     seedsNft = seeds;
   }
