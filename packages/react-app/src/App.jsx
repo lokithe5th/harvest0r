@@ -1,4 +1,4 @@
-import { Button, Col, Menu, Row } from "antd";
+import { Button, Card, Col, List, Menu, Row } from "antd";
 
 import "antd/dist/antd.css";
 import {
@@ -30,7 +30,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, Hints, Subgraph } from "./views";
+import { Home, Seeds, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -184,6 +184,10 @@ function App(props) {
   console.log("🏷 Resolved austingriffith.eth as:", addressFromENS)
   */
 
+  const [worldCollectibles, setWorldCollectibles] = useState();
+  const [yourCollectibles, setYourCollectibles] = useState();
+  const mintprice = 10;
+
   //
   // 🧫 DEBUG 👨🏻‍🔬
   //
@@ -333,8 +337,7 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-
-          <Contract
+          <Contract 
             name="Seeds"
             price={price}
             signer={userSigner}
@@ -362,7 +365,88 @@ function App(props) {
             contractConfig={contractConfig}
           />
         </Route>
-        <Route path="/seeds">
+        <Route exact path="/seeds">
+        <hr/>
+						<div class="wrapper">
+							<div class="inner" data-onvisible-trigger="1">
+								<p id="text01" class="style4">A new Universe Awaits</p>
+								<h1 id="text69" class="style2">Worlds</h1>
+                <h1>🌍🌍🌍</h1>
+								<p id="text73" class="style1"><span class="p">Cast into the void, you must gather the Energy of this new universe. It is the only way.</span><span class="p">
+                  <em>Worlds is a portfolio project by @lourenslinde.</em><br></br><em>The NFT uses a gas efficient implementation of ERC721 by avoiding ERC721Enumerable and using custom solutions to reproduce the same functionality.</em></span><span class="p"><strong>Proudly developed with Scaffold-Eth</strong></span></p>
+                  <p><span class="p"><strong><a href="https://optimistic.etherscan.io/address/0x4f7dd11B9c5eE9C79eecfF2127bCFf153e0eA49F#code">Worlds Contract Address</a></strong></span></p>
+                  <p><span class="p"><strong><a href="https://optimistic.etherscan.io/address/0xDfDDA54eA89889ca66A7eb4f61C9fA0A635c1218#code">Energy Token Contract Address</a></strong></span></p>
+							</div>
+						</div>
+					<hr id="divider05" class="style1 full screen"></hr>
+          <div id="container03" data-scroll-id="two" data-scroll-behavior="center" data-scroll-offset="0" data-scroll-invisible="1" class="style1 container default">
+						<div class="wrapper">
+							<div class="inner" data-onvisible-trigger="1">
+								<h3 id="text13" class="style7">Mint Your Own</h3>
+								<p id="text14" class="style1">The Worlds universe lives on the Ethereum blockchain as ERC721 tokens. Energy extracted from each world is represented as an ERC20 token.</p>
+                <p class="style1"><em>Please refresh your browser after a few minutes to reveal your Worlds NFT</em></p>
+                <p id="text14" class="style1"> The values of the world correspond to: terrain type, the resource available, size, energy stream, structures, atmosphere, artifact and the energy accrued.</p>
+							</div>
+						</div>
+					</div>
+          <div><p textAlign="center">🌍🌍🌍</p></div>
+						<div class="wrapper">
+							<div class="inner" data-onvisible-trigger="1">
+                  {userSigner?(
+                <Button type={"primary"} onClick={()=>{
+                  tx( writeContracts.Worlds.mintItem({ value: mintprice.toString()}))
+                }}>MINT FOR 0.02 OE</Button>
+              ):(
+                <Button type={"primary"} onClick={loadWeb3Modal}>CONNECT WALLET</Button>
+              )}
+							</div>
+					</div>
+				
+					<hr id="divider04" class="style1 full screen"></hr>
+          <div id="container02" data-scroll-id="one" data-scroll-behavior="center" data-scroll-offset="0" data-scroll-invisible="1" class="style1 container default">
+						<div class="wrapper">
+							<div class="inner" data-onvisible-trigger="1">
+								<h3 id="text04" class="style7">All Discovered Worlds</h3>
+                <List
+                grid={{ gutter: 16, column: 3 }}
+                bordered
+                dataSource={worldCollectibles}
+                renderItem={item => {
+                  const id = item.id;
+                  const tokenId = item.tokenId;
+
+                  console.log("IMAGE",item.image)
+                  console.log("Data", tokenId)
+
+                  return (
+                    <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                      <Card
+                        title={
+                          <div>
+                            <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                          </div>
+                        }
+                      >
+                        <a href={"https://opensea.io/assets/"+(readContracts && readContracts.Worlds && readContracts.Worlds.address)+"/"+item.id} target="_blank">
+                        <img src={item.image} />
+                        </a>
+                        <div><em>01100111 01100001 01110110 01101001 01110011 01110100 01101001</em></div>
+                        <div>
+                        </div>
+                        <p><em>Worlds NFT</em></p>
+                      </Card>
+
+                      
+                    </List.Item>
+                  );
+                }}
+              />
+							</div>
+						</div>
+					</div>
+					<hr id="divider03" class="style1 full screen"></hr>
+					<p id="text05" class="style3">© lourenslinde 2022. All rights reserved.</p>         
+
         <Contract
             name="Seeds"
             price={price}
