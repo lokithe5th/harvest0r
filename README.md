@@ -1,16 +1,16 @@
-# Harvest0r
+# Harvest0r 🚜🚜🚜
 
 Harvestors allow users to take advantage of tax-loss harvesting by making a market
-for a specified token and buying it at a constant price of 0.0069 ether.  
+for a specified token and buying it at a constant price of `0.0069` ether.  
 
 The HARVEST0R projects consists of `Harvest0r.sol`, `Seeds.sol` and the `Harvest0rFactory.sol` contracts.  
 
-To access Harvestors you need a `Seeds Access Voucher` NFT with enough.
+To access Harvestors you need a `Seeds Access Voucher` NFT with enough charge.
 
 ## IMPORTANT
-1) Tax-loss harvesting is legal in certain jurisdictions, but **it is ALWAYS the user's responsibility to be aware of the tax and legal consequences of any action they take, especially on the blockchain where transactions are not private and do not disappear**. Do not interact with the contracts if you intend to use it in an illegal manner. Always assume all addresses used at least once as doxxed. The creator cannot accept responsibility for your actions.
+1. Tax-loss harvesting is legal in certain jurisdictions, but **it is ALWAYS the user's responsibility to be aware of the tax and legal consequences of any action they take, especially on the blockchain where transactions are not private and do not disappear**. Do not interact with the contracts if you intend to use it in an illegal manner. Always assume all addresses used at least once as doxxed. The creator cannot accept responsibility for your actions.
 
-The tokens sold to the Harvestors do not return to the users. The owners can sell these tokens at a later stage should it become profitable. 
+2. The tokens sold to the Harvestors do not return to the users. The owners can sell these tokens at a later stage should it become profitable. This is part of the business model.
 
 ## Harvest0rFactory  
 
