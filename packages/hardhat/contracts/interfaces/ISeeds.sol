@@ -1,6 +1,9 @@
 pragma solidity 0.8.17;
 //SPDX-License-Identifier: MIT
 
+/// @title Seeds Access Voucher Interface
+/// @author lourens.eth
+
 import "erc721a/contracts/IERC721A.sol";
 
 interface ISeeds is IERC721A {
@@ -19,6 +22,14 @@ interface ISeeds is IERC721A {
   error NotExists();
   /// The target token doesn't have enough charge left
   error NoCharge();
+
+  /******************************************************************
+   *                         SETUP                                  *
+   ******************************************************************/
+
+  /// @notice Sets up the factory address
+  /// @param harvestorFactory Address of the Harvestor Factory
+  function setup(address harvestorFactory) external;
 
   /******************************************************************
    *                         NFT FUNCTIONALITY                      *

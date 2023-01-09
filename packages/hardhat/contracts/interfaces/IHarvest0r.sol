@@ -1,6 +1,9 @@
 pragma solidity 0.8.17;
 //SPDX-License-Identifier: MIT
 
+/// @title Harvest0r Interface
+/// @author lourens.eth
+
 interface IHarvest0r {
 
   /******************************************************************
@@ -31,8 +34,20 @@ interface IHarvest0r {
   /// @param value The amount of `token` to sell for `buyAmount`
   function sellToken(uint256 tokenId, uint256 value) external;
 
+  /******************************************************************
+   *                      OWNER FUNCTIONS                           *
+   ******************************************************************/
+
   /// @notice Transfers the bought tokens to `target`
   /// @param target The address to which to transfer the tokens
   /// @param value The amount of tokens to transfer to `target`
   function transferToken(address target, uint256 value) external;
+
+  /******************************************************************
+   *                       VIEW FUNCTIONS                           *
+   ******************************************************************/
+
+  /// @notice Returns the token this Harvestor is linked to
+  /// @return address The address of the token this Harvestor can accept
+  function viewToken() external view returns (address);
 }

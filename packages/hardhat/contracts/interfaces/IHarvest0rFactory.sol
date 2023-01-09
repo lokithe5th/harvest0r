@@ -1,6 +1,9 @@
 pragma solidity 0.8.17;
 //SPDX-License-Identifier: MIT
 
+/// @title Harvest0rFactory Interface
+/// @author lourens.eth
+
 interface IHarvest0rFactory {
 
   /******************************************************************

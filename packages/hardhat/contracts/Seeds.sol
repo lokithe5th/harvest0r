@@ -2,6 +2,9 @@ pragma solidity 0.8.17;
 //SPDX-License-Identifier: MIT
 
 /**
+  @title Seeds Access Voucher
+  @author lourens.eth
+
    .-'''-.     .-''-.      .-''-.   ______        .-'''-.
   / _     \  .'_ _   \   .'_ _   \ |    _ `''.   / _     \
  (`' )/`--' / ( ` )   ' / ( ` )   '| _ | ) _  \ (`' )/`--'
@@ -24,7 +27,7 @@ pragma solidity 0.8.17;
 
   Disclaimer: Every user must ensure they adhere to the tax laws of
   their local jurisdiction. The creator of this contract cannot accept
-  liability for users' actions when using this piece of software. 
+  liability for users' actions when using this contract. 
 
   NB It is always your own responsibility to make sure you comply
   with tax (and any other) laws applicable to you and/or the entities
@@ -36,11 +39,17 @@ pragma solidity 0.8.17;
   opportunity arises for a profit.
  */
 
-import "hardhat/console.sol";
+/******************************************************************
+ *                            IMPORTS                             *
+ ******************************************************************/
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Base64.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "erc721a/contracts/ERC721A.sol";
+
+/******************************************************************
+ *                         INTERFACES                             *
+ ******************************************************************/
 import "./interfaces/IHarvest0rFactory.sol";
 import "./interfaces/ISeeds.sol";
 
@@ -85,7 +94,7 @@ contract Seeds is ISeeds, ERC721A, Ownable {
   ];
 
   /******************************************************************
-   *                         CONSTRUCTOR                            *
+   *                         SETUP                                  *
    ******************************************************************/
 
   /// @notice Initial set up of the `Seeds Access Voucher NFT` 
@@ -96,9 +105,8 @@ contract Seeds is ISeeds, ERC721A, Ownable {
     
   }
 
-  /// @notice Sets up the factory address
-  /// @param harvestorFactory Address of the Harvestor Factory
-  function setup(address harvestorFactory) external {
+  /// @inheritdoc ISeeds
+  function setup(address harvestorFactory) external onlyOwner {
     factory = IHarvest0rFactory(harvestorFactory);
   }
 

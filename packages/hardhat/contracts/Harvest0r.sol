@@ -2,6 +2,8 @@ pragma solidity 0.8.17;
 //SPDX-License-Identifier: MIT
 
 /**
+  @title Harvest0r Interface
+  @author lourens.eth
   __  __     ______     ______     __   __   ______     ______     ______   ______
 /\ \_\ \   /\  __ \   /\  == \   /\ \ / /  /\  ___\   /\  ___\   /\__  _\ /\  == \
 \ \  __ \  \ \  __ \  \ \  __<   \ \ \'/   \ \  __\   \ \___  \  \/_/\ \/ \ \  __<
@@ -17,18 +19,25 @@ pragma solidity 0.8.17;
   Sellers must own a `Seeds Access Voucher` and the act of selling a token
   will consume one charge of the `SEEDS` NFT.
 
-  Note the sold tokens are not recoverable by sellers and the contract creator
-  intends to sell these tokens at a profit should the opportubnity arise.
+  Note: 1) the sold tokens are not recoverable by sellers and the contract creator
+        intends to sell these tokens at a profit should the opportubnity arise;
+        2) ensure you abide by local tax laws!
 
   Harvest at your own risk!
 
  */
 
-import "hardhat/console.sol";
+/******************************************************************
+ *                            IMPORTS                             *
+ ******************************************************************/
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+
+/******************************************************************
+ *                         INTERFACES                             *
+ ******************************************************************/
 import "./interfaces/ISeeds.sol";
 import "./interfaces/IHarvest0r.sol";
 
@@ -74,7 +83,7 @@ contract Harvest0r is IHarvest0r, Ownable, Initializable {
     uint256 tokenId,
     uint256 value
   ) external {
-    // require an NFT with an available charge
+    // require an owned NFT with an available charge
     if (msg.sender != seeds.ownerOf(tokenId)) {revert NotOwner();}
     if (seeds.viewCharge(tokenId) == 0) {revert UnsufficientCharge();}
 
@@ -99,6 +108,7 @@ contract Harvest0r is IHarvest0r, Ownable, Initializable {
   /******************************************************************
    *                       VIEW FUNCTIONS                           *
    ******************************************************************/
+  /// @inheritdoc IHarvest0r
   function viewToken() external view returns (address) {
     return address(token);
   }
