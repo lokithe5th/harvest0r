@@ -1,12 +1,32 @@
 # Harvest0r
 
-The HarvestorFactory contract allows users to deploy Harvestors for specific tokens using `newHarvestor`.
+Harvestors allow users to take advantage of tax-loss harvesting by making a market
+for a specified token and buying it at a constant price of 0.0069 ether.  
 
-These harvestors allow users to take advantage of tax-loss harvesting by making a market
-for the specified token and buying it at a constant price of 0.069 ether.
+The HARVEST0R projects consists of `Harvest0r.sol`, `Seeds.sol` and the `Harvest0rFactory.sol` contracts.  
+
+To access Harvestors you need a `Seeds Access Voucher` NFT with enough.
+
+## IMPORTANT
+1) Tax-loss harvesting is legal in certain jurisdictions, but **it is ALWAYS the user's responsibility to be aware of the tax and legal consequences of any action they take, especially on the blockchain where transactions are not private and do not disappear**. Do not interact with the contracts if you intend to use it in an illegal manner. Always assume all addresses used at least once as doxxed. The creator cannot accept responsibility for your actions.
+
+The tokens sold to the Harvestors do not return to the users. The owners can sell these tokens at a later stage should it become profitable. 
+
+## Harvest0rFactory  
+
+`HarvestorFactory.sol` allows users to deploy Harvestors for specific tokens using `newHarvestor`.
+
+A user can use `findHarvestor(token)` to find the appropriate Harvestor-Token pair.
+
+## Seeds Access Voucher  
 
 The Seeds Access Voucher NFTs (SEEDS) are required to allow access to Harvestor Contracts.
-The Seeds NFTs hold 9 charges, which grants access to the `sellToken` functionality 9 times.
+
+Only 1000 of these vouchers can be minted, at a price of 0.069 eth. Max 5 per wallet.
+
+As evidenced in the code, in effect only 10% of the minting price goes to the creators.
+
+The Seeds NFTs hold 9 charges, which grants access to the `sellToken` functionality of the Harvest0r 9 times.
 
 Once depleted the NFT can be recharged through the `recharge` function of the `Seeds.sol` contract.
 
