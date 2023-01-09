@@ -3,6 +3,8 @@
 Harvestors allow users to take advantage of tax-loss harvesting by making a market
 for a specified token and buying it at a constant price of `0.0069` ether.  
 
+A user can create a market for any token they wish to harvest by using the `Harvest0rFactory`
+
 The HARVEST0R projects consists of `Harvest0r.sol`, `Seeds.sol` and the `Harvest0rFactory.sol` contracts.  
 
 To access Harvestors you need a `Seeds Access Voucher` NFT with enough charge.

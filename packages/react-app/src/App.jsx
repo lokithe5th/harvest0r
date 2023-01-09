@@ -369,13 +369,13 @@ function App(props) {
         <hr/>
 						<div class="wrapper">
 							<div class="inner" data-onvisible-trigger="1">
-								<p id="text01" class="style4">A new Universe Awaits</p>
-								<h1 id="text69" class="style2">Worlds</h1>
-                <h1>🌍🌍🌍</h1>
-								<p id="text73" class="style1"><span class="p">Cast into the void, you must gather the Energy of this new universe. It is the only way.</span><span class="p">
-                  <em>Worlds is a portfolio project by @lourenslinde.</em><br></br><em>The NFT uses a gas efficient implementation of ERC721 by avoiding ERC721Enumerable and using custom solutions to reproduce the same functionality.</em></span><span class="p"><strong>Proudly developed with Scaffold-Eth</strong></span></p>
-                  <p><span class="p"><strong><a href="https://optimistic.etherscan.io/address/0x4f7dd11B9c5eE9C79eecfF2127bCFf153e0eA49F#code">Worlds Contract Address</a></strong></span></p>
-                  <p><span class="p"><strong><a href="https://optimistic.etherscan.io/address/0xDfDDA54eA89889ca66A7eb4f61C9fA0A635c1218#code">Energy Token Contract Address</a></strong></span></p>
+								<p id="text01" class="style4">Harvest0rs</p>
+								<h1 id="text69" class="style2">Still WIP</h1>
+                <h1>🚜🚜🚜</h1>
+								<p id="text73" class="style1"><span class="p">To Do: Insert description here</span><span class="p">
+                  <em>Harvest0r project is a portfolio project by @lourenslinde.</em><br></br><em>The NFT uses a gas efficient implementation of ERC721A from Chira Labs.</em></span><span class="p"><strong>Proudly developed with Scaffold-Eth</strong></span></p>
+                  <p><span class="p"><strong><a href="https://optimistic.etherscan.io/address/0x4f7dd11B9c5eE9C79eecfF2127bCFf153e0eA49F#code">Insert Seeds Contract Address</a></strong></span></p>
+                  <p><span class="p"><strong><a href="https://optimistic.etherscan.io/address/0xDfDDA54eA89889ca66A7eb4f61C9fA0A635c1218#code">Insert Harvst0r Factory Contract Address</a></strong></span></p>
 							</div>
 						</div>
 					<hr id="divider05" class="style1 full screen"></hr>
@@ -383,13 +383,12 @@ function App(props) {
 						<div class="wrapper">
 							<div class="inner" data-onvisible-trigger="1">
 								<h3 id="text13" class="style7">Mint Your Own</h3>
-								<p id="text14" class="style1">The Worlds universe lives on the Ethereum blockchain as ERC721 tokens. Energy extracted from each world is represented as an ERC20 token.</p>
-                <p class="style1"><em>Please refresh your browser after a few minutes to reveal your Worlds NFT</em></p>
-                <p id="text14" class="style1"> The values of the world correspond to: terrain type, the resource available, size, energy stream, structures, atmosphere, artifact and the energy accrued.</p>
-							</div>
+								<p id="text14" class="style1">The Harvest0rs live on the Ethereum blockchain.</p>
+                <p class="style1"><em>Please refresh your browser after a few minutes to reveal your Seeds NFT</em></p>
+                </div>
 						</div>
 					</div>
-          <div><p textAlign="center">🌍🌍🌍</p></div>
+          <div><p textAlign="center">🚜🚜🚜</p></div>
 						<div class="wrapper">
 							<div class="inner" data-onvisible-trigger="1">
                   {userSigner?(
