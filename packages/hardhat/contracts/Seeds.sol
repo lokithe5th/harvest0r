@@ -127,16 +127,18 @@ contract Seeds is ISeeds, ERC721A, Ownable {
 
   /// @inheritdoc	ERC721A
   function tokenURI(uint256 tokenId) public view override (ERC721A, IERC721A) returns (string memory json) {
-    json = Base64.encode(bytes(string(abi.encodePacked(
-          '{"name": "Seeds NFT", "description": "...as you sow...", "image": "data:image/svg+xml;base64,', Base64.encode(bytes(generateSVGofTokenById(tokenId))), '"}'))));
+    json = Base64.encode(bytes(string.concat(
+          '{"name": "Seeds NFT", "description": "...as you sow...", "image": "data:image/svg+xml;base64,',
+          Base64.encode(bytes(generateSVGofTokenById(tokenId))),
+          '"}')));
 
-        json = string(abi.encodePacked('data:application/json;base64,', json));
+        json = string.concat('data:application/json;base64,', json);
   }
 
   /// @inheritdoc	ISeeds
   function generateSVGofTokenById(uint256 tokenId) public view returns (string memory svg) {
     TokenOwnership memory unpackedData = _ownershipAt(tokenId);
-    svg = string(abi.encodePacked(svgParts[0], 'Charges: ', (uint256(unpackedData.extraData)).toString(), svgParts[1], svgParts[2]));
+    svg = string.concat(svgParts[0], 'Charges: ', (uint256(unpackedData.extraData)).toString(), svgParts[1], svgParts[2]);
   }
 
   /******************************************************************

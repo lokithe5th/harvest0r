@@ -7,6 +7,13 @@ The HARVEST0R projects consists of `Harvest0r.sol`, `Seeds.sol` and the `Harvest
 
 To access Harvestors you need a `Seeds Access Voucher` NFT with enough charge.
 
+The flow to use a `Harvest0r` is:
+1. Obtain a `Seeds Access Voucher` NFT
+2. Navigate to the `Harvest0rFactory` and either deploy a `Harvest0r` for the token you want to harvest, or find the `Harvest0r` address if already deployed.
+3. Access the `sellToken` functionality of the `Harvest0r`-token pair. You will receive a constant `0.0069 ether` per sale. This consumes one charge of the `SEEDS` NFT.
+4. Should the charges become depleted you can replenish the NFT's charges by calling `recharge` on the `SEEDS` NFT contract, this costs `0.069 ether` for 9 charges.  
+
+
 ## IMPORTANT
 1. Tax-loss harvesting is legal in certain jurisdictions, but **it is ALWAYS the user's responsibility to be aware of the tax and legal consequences of any action they take, especially on the blockchain where transactions are not private and do not disappear**. Do not interact with the contracts if you intend to use it in an illegal manner. Always assume all addresses used at least once as doxxed. The creator cannot accept responsibility for your actions.
 
