@@ -117,11 +117,25 @@ contract Seeds is ISeeds, ERC721A, Ownable {
   /// @inheritdoc	ISeeds
   function mint(uint256 quantity) external payable {
     if (msg.value < mintCost) {revert UnsufficientValue();}
-    if (quantity > 5) {revert MaxMintExceeded();}
+    if (quantity > maxMint) {revert MaxMintExceeded();}
+    //uint256 startTokenId = _nextTokenId();
 
     // `_mint`'s second argument now takes in a `quantity`, not a `tokenId`.
-    _safeMint(msg.sender, quantity);
+    _mint(msg.sender, quantity);
     fees += (msg.value / 10);
+    /*
+    if (quantity == 1) {
+        _initializeOwnershipAt(startTokenId);
+        /// Set the initial charges
+        _setExtraDataAt(startTokenId, 9);
+    } else {
+      
+      for (uint256 i = startTokenId; i < startTokenId + quantity; i++) {
+        _initializeOwnershipAt(i);
+        /// Set the initial charges
+        _setExtraDataAt(i, 9);
+      }
+    }*/
 
   }
 
@@ -175,7 +189,7 @@ contract Seeds is ISeeds, ERC721A, Ownable {
 
   /// @inheritdoc	ISeeds
   function viewCharge(uint256 tokenId) public view returns (uint24) {
-    if (tokenId >= _nextTokenId()) {revert NotExists();}
+    if (tokenId > _nextTokenId()) {revert NotExists();}
 
     TokenOwnership memory unpackedData = _ownershipAt(tokenId);
     return unpackedData.extraData;
@@ -198,6 +212,7 @@ contract Seeds is ISeeds, ERC721A, Ownable {
   }
 
   /// @inheritdoc ERC721A
+
   function _afterTokenTransfers(
       address from,
       address to,
@@ -205,15 +220,24 @@ contract Seeds is ISeeds, ERC721A, Ownable {
       uint256 quantity
   ) internal override {
     if (from == address(0)) {
+      uint256 end = startTokenId + quantity;
+      uint256 tokenId = startTokenId;
+
+      do {
+        _initializeOwnershipAt(tokenId);
+        /// Set the initial charges
+        _setExtraDataAt(tokenId, 9);
+      } while (++tokenId != end);
+
+      /*
        for (uint8 i; i < quantity; i++) {
         /// Fix for `OwnershipNotInitializedForExtraData` error
         _initializeOwnershipAt(startTokenId + i);
         /// Set the initial charges
         _setExtraDataAt(startTokenId + i, 9);
-      }
-    }
+      } */
+    } 
   }
-
   /******************************************************************
    *                       VIEW FUNCTIONS                           *
    ******************************************************************/

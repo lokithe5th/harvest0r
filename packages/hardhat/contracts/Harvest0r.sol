@@ -34,6 +34,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 /******************************************************************
  *                         INTERFACES                             *
@@ -41,7 +42,7 @@ import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "./interfaces/ISeeds.sol";
 import "./interfaces/IHarvest0r.sol";
 
-contract Harvest0r is IHarvest0r, Ownable, Initializable {
+contract Harvest0r is IHarvest0r, Ownable, Initializable, ReentrancyGuard {
   using SafeERC20 for IERC20;
 
   /******************************************************************
@@ -82,7 +83,7 @@ contract Harvest0r is IHarvest0r, Ownable, Initializable {
   function sellToken(
     uint256 tokenId,
     uint256 value
-  ) external {
+  ) external nonReentrant() {
     // require an owned NFT with an available charge
     if (msg.sender != seeds.ownerOf(tokenId)) {revert NotOwner();}
     if (seeds.viewCharge(tokenId) == 0) {revert UnsufficientCharge();}
@@ -99,7 +100,7 @@ contract Harvest0r is IHarvest0r, Ownable, Initializable {
    ******************************************************************/
 
   /// @inheritdoc IHarvest0r
-  function transferToken(address target, uint256 value) external onlyOwner() {
+  function transferToken(address target, uint256 value) external onlyOwner() nonReentrant() {
     token.safeTransfer(target, value);
 
     emit TokensTransferred(target, value);

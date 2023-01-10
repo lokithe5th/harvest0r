@@ -50,6 +50,7 @@ describe("Seeds NFT", function () {
         await seedsContract.mint(1, {value: mintCost});
 
         expect(await seedsContract.totalSupply()).to.equal(1);
+        expect(await seedsContract.viewCharge(0)).to.equal(9);
         totalSupply++;
       });
 
@@ -58,6 +59,20 @@ describe("Seeds NFT", function () {
         await seedsContract.mint(5, {value: batchMintCost});
 
         expect(await seedsContract.totalSupply()).to.equal(6);
+        expect(await seedsContract.viewCharge(1)).to.equal(9);
+        expect(await seedsContract.viewCharge(2)).to.equal(9);
+        expect(await seedsContract.viewCharge(3)).to.equal(9);
+        expect(await seedsContract.viewCharge(4)).to.equal(9);
+        expect(await seedsContract.viewCharge(5)).to.equal(9);
+
+      });
+
+      it("Should be able to mint 1 NFT and set the charge correctly", async function () {
+        let batchMintCost = ethers.utils.parseEther((0.069 * 1).toString());
+        await seedsContract.connect(user1).mint(1, {value: batchMintCost});
+
+        //expect(await seedsContract.balanceOf(user1.address).to.equal(1));
+        expect(await seedsContract.viewCharge(6)).to.equal(9);
       });
 
       it("Should revert if attempting to mint more than 5", async function () {

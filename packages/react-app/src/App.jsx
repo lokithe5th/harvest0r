@@ -183,10 +183,91 @@ function App(props) {
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:", addressFromENS)
   */
+  const balance = useContractReader(mainnetContracts, "Seeds", "balanceOf", [address]);
+  const totalSupplyBig = useContractReader(mainnetContracts, "Seeds", "_tokenIds");
+  const totalSupply = (totalSupplyBig && totalSupplyBig.toNumber && totalSupplyBig.toNumber())-1;
+  console.log("🤗 totalSupply:", totalSupply);
+  const yourBalance = balance && balance.toNumber && balance.toNumber();
+  console.log(balance);
 
-  const [worldCollectibles, setWorldCollectibles] = useState();
+  const [seedsCollectibles, setSeedsCollectibles] = useState();
   const [yourCollectibles, setYourCollectibles] = useState();
   const mintprice = 10;
+
+  useEffect(() => {
+    const updateSeedsCollectibles = async () => {
+      const collectibleUpdate = [];
+      for (let tokenIndex = 1; tokenIndex <= totalSupply; tokenIndex++) {
+        try {
+          console.log("GEtting token index", tokenIndex);
+          //const tokenId = await readContracts.Worlds.tokenOfOwnerByIndex(address, tokenIndex);
+          //const testId = tokenId && balance.toNumber && balance.toNumber();
+          console.log("tokenId", tokenIndex);
+          const tokenURI = await mainnetContracts.Worlds.tokenURI(tokenIndex);
+          const tokenOwner = await mainnetContracts.Worlds.ownerOf(tokenIndex);
+          console.log("Owner of token: "+tokenOwner);
+          const jsonManifestString = atob(tokenURI.substring(29))
+          console.log("jsonManifestString", jsonManifestString);
+/*
+          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
+          console.log("ipfsHash", ipfsHash);
+          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+        */
+          try {
+            const jsonManifest = JSON.parse(jsonManifestString);
+            console.log("jsonManifest", jsonManifest);
+            collectibleUpdate.push({ id: tokenIndex, uri: tokenURI, owner: tokenOwner, ...jsonManifest });
+            console.log({id: tokenIndex, uri: tokenURI, owner: tokenOwner, ...jsonManifest});
+          } catch (e) {
+            console.log(e);
+          }
+
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setSeedsCollectibles(collectibleUpdate.reverse());
+    };
+    updateSeedsCollectibles();
+
+    const updateYourCollectibles = async () => {
+      const collectibleUpdate = [];
+      for (let tokenIndex = 1; tokenIndex <= totalSupply; tokenIndex++) {
+        try {
+          console.log("GEtting token index", tokenIndex);
+          //const tokenId = await readContracts.Worlds.tokenOfOwnerByIndex(address, tokenIndex);
+          //const testId = tokenId && balance.toNumber && balance.toNumber();
+          console.log("tokenId", tokenIndex);
+          const tokenURI = await mainnetContracts.Worlds.tokenURI(tokenIndex);
+          const tokenOwner = await mainnetContracts.Worlds.ownerOf(tokenIndex);
+          console.log("Owner of token: "+tokenOwner);
+          const jsonManifestString = atob(tokenURI.substring(29))
+          console.log("jsonManifestString", jsonManifestString);
+/*
+          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
+          console.log("ipfsHash", ipfsHash);
+          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+        */
+          if (tokenOwner == address) {
+            try {
+              const jsonManifest = JSON.parse(jsonManifestString);
+              console.log("jsonManifest", jsonManifest);
+              collectibleUpdate.push({ id: tokenIndex, uri: tokenURI, owner: tokenOwner, ...jsonManifest });
+              console.log({id: tokenIndex, uri: tokenURI, owner: tokenOwner, ...jsonManifest});
+            } catch (e) {
+              console.log(e);
+            }
+          }
+
+        
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setYourCollectibles(collectibleUpdate.reverse());
+    };
+    updateYourCollectibles();
+  }, [address, yourBalance]);
 
   //
   // 🧫 DEBUG 👨🏻‍🔬
@@ -372,7 +453,11 @@ function App(props) {
 								<p id="text01" class="style4">Harvest0rs</p>
 								<h1 id="text69" class="style2">Still WIP</h1>
                 <h1>🚜🚜🚜</h1>
-								<p id="text73" class="style1"><span class="p">To Do: Insert description here</span><span class="p">
+								<p id="text73" class="style1"><span class="p">The flow to use a `Harvest0r` is:
+                    <ol><li>Obtain a `Seeds Access Voucher` NFT</li>
+                    <li>Navigate to the `Harvest0rFactory` and either deploy a `Harvest0r` for the token you want to harvest, or find the `Harvest0r` address if already deployed.</li>
+                    <li>Access the `sellToken` functionality of the `Harvest0r`-token pair. You will receive a constant `0.0069 ether` per sale. This consumes one charge of the `SEEDS` NFT.</li>
+                    <li>Should the charges become depleted you can replenish the NFT's charges by calling `recharge` on the `SEEDS` NFT contract, this costs `0.069 ether` for 9 charges.</li></ol></span><span class="p">
                   <em>Harvest0r project is a portfolio project by @lourenslinde.</em><br></br><em>The NFT uses a gas efficient implementation of ERC721A from Chira Labs.</em></span><span class="p"><strong>Proudly developed with Scaffold-Eth</strong></span></p>
                   <p><span class="p"><strong><a href="https://optimistic.etherscan.io/address/0x4f7dd11B9c5eE9C79eecfF2127bCFf153e0eA49F#code">Insert Seeds Contract Address</a></strong></span></p>
                   <p><span class="p"><strong><a href="https://optimistic.etherscan.io/address/0xDfDDA54eA89889ca66A7eb4f61C9fA0A635c1218#code">Insert Harvst0r Factory Contract Address</a></strong></span></p>
@@ -409,7 +494,7 @@ function App(props) {
                 <List
                 grid={{ gutter: 16, column: 3 }}
                 bordered
-                dataSource={worldCollectibles}
+                dataSource={seedsCollectibles}
                 renderItem={item => {
                   const id = item.id;
                   const tokenId = item.tokenId;
@@ -445,16 +530,6 @@ function App(props) {
 					</div>
 					<hr id="divider03" class="style1 full screen"></hr>
 					<p id="text05" class="style3">© lourenslinde 2022. All rights reserved.</p>         
-
-        <Contract
-            name="Seeds"
-            price={price}
-            signer={userSigner}
-            provider={localProvider}
-            address={address}
-            blockExplorer={blockExplorer}
-            contractConfig={contractConfig}
-          />
         </Route>
         <Route path="/harvestorFactory">
         <Contract
