@@ -479,7 +479,7 @@ function App(props) {
                   {userSigner?(
                 <Button type={"primary"} onClick={()=>{
                   tx( writeContracts.Worlds.mintItem({ value: mintprice.toString()}))
-                }}>MINT FOR 0.02 OE</Button>
+                }}>MINT FOR 0.069 E</Button>
               ):(
                 <Button type={"primary"} onClick={loadWeb3Modal}>CONNECT WALLET</Button>
               )}
@@ -490,7 +490,7 @@ function App(props) {
           <div id="container02" data-scroll-id="one" data-scroll-behavior="center" data-scroll-offset="0" data-scroll-invisible="1" class="style1 container default">
 						<div class="wrapper">
 							<div class="inner" data-onvisible-trigger="1">
-								<h3 id="text04" class="style7">All Discovered Worlds</h3>
+								<h3 id="text04" class="style7">All Minted Seeds Vouchers</h3>
                 <List
                 grid={{ gutter: 16, column: 3 }}
                 bordered
