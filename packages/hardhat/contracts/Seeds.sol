@@ -123,20 +123,6 @@ contract Seeds is ISeeds, ERC721A, Ownable {
     // `_mint`'s second argument now takes in a `quantity`, not a `tokenId`.
     _mint(msg.sender, quantity);
     fees += (msg.value / 10);
-    /*
-    if (quantity == 1) {
-        _initializeOwnershipAt(startTokenId);
-        /// Set the initial charges
-        _setExtraDataAt(startTokenId, 9);
-    } else {
-      
-      for (uint256 i = startTokenId; i < startTokenId + quantity; i++) {
-        _initializeOwnershipAt(i);
-        /// Set the initial charges
-        _setExtraDataAt(i, 9);
-      }
-    }*/
-
   }
 
   /// @inheritdoc	ERC721A
@@ -228,14 +214,6 @@ contract Seeds is ISeeds, ERC721A, Ownable {
         /// Set the initial charges
         _setExtraDataAt(tokenId, 9);
       } while (++tokenId != end);
-
-      /*
-       for (uint8 i; i < quantity; i++) {
-        /// Fix for `OwnershipNotInitializedForExtraData` error
-        _initializeOwnershipAt(startTokenId + i);
-        /// Set the initial charges
-        _setExtraDataAt(startTokenId + i, 9);
-      } */
     } 
   }
   /******************************************************************
