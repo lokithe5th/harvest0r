@@ -88,7 +88,7 @@ contract Seeds is ISeeds, ERC721A, Ownable {
 
   /// The strings required for SVG Generation
   string[3] internal svgParts = [
-        '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 400"><style>.base { fill: white; font-family: monospace; font-size: 14px; }</style><rect width="100%" height="100%" fill="black" /><text x="10" y="20" class="base">',
+        '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 400"><style>.base { fill: white; font-family: monospace; font-size: 18px; }</style><rect width="100%" height="100%" fill="black" /><text x="10" y="20" class="base">',
         '</text><text x="10" y="40" class="base">',
         '</text></svg>'
   ];
@@ -128,7 +128,7 @@ contract Seeds is ISeeds, ERC721A, Ownable {
   /// @inheritdoc	ERC721A
   function tokenURI(uint256 tokenId) public view override (ERC721A, IERC721A) returns (string memory json) {
     json = Base64.encode(bytes(string.concat(
-          '{"name": "Seeds NFT", "description": "...as you sow...", "image": "data:image/svg+xml;base64,',
+          '{"name": "Seeds", "description": "Seeds Access Voucher", "image": "data:image/svg+xml;base64,',
           Base64.encode(bytes(generateSVGofTokenById(tokenId))),
           '"}')));
 
