@@ -189,7 +189,7 @@ contract Seeds is ISeeds, ERC721A, Ownable {
 
   /// @inheritdoc	ISeeds
   function viewCharge(uint256 tokenId) public view returns (uint24) {
-    if (tokenId > _nextTokenId()) {revert NotExists();}
+    if (tokenId >= _nextTokenId()) {revert NotExists();}
 
     TokenOwnership memory unpackedData = _ownershipAt(tokenId);
     return unpackedData.extraData;
