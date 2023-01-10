@@ -178,33 +178,37 @@ function App(props) {
 
   // keep track of a variable from the contract in the local React state:
   const purpose = useContractReader(readContracts, "YourContract", "purpose", [], localProviderPollingTime);
-
+  let seedsSup = useContractReader(readContracts, "Seeds", "totalSupply",[], localProviderPollingTime)
+  console.log("Seedsup: ",seedsSup);
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:", addressFromENS)
   */
-  const balance = useContractReader(mainnetContracts, "Seeds", "balanceOf", [address]);
-  const totalSupplyBig = useContractReader(mainnetContracts, "Seeds", "_tokenIds");
-  const totalSupply = (totalSupplyBig && totalSupplyBig.toNumber && totalSupplyBig.toNumber())-1;
+  const balance = useContractReader(readContracts, "Seeds", "balanceOf", [address]);
+  const totalSupplyBig = useContractReader(readContracts, "Seeds", "totalSupply", [], localProviderPollingTime);
+  
+  const totalSupply = (totalSupplyBig && totalSupplyBig.toNumber && totalSupplyBig.toNumber());
   console.log("🤗 totalSupply:", totalSupply);
   const yourBalance = balance && balance.toNumber && balance.toNumber();
-  console.log(balance);
+  console.log("Your balance: ", yourBalance);
 
   const [seedsCollectibles, setSeedsCollectibles] = useState();
   const [yourCollectibles, setYourCollectibles] = useState();
-  const mintprice = 10;
+  const mintprice = ethers.utils.parseEther("0.069");
 
   useEffect(() => {
+    console.log("INSIDE USE EFFECT ---------------->")
     const updateSeedsCollectibles = async () => {
       const collectibleUpdate = [];
-      for (let tokenIndex = 1; tokenIndex <= totalSupply; tokenIndex++) {
+      for (let tokenIndex = 0; tokenIndex < totalSupply; tokenIndex++) {
         try {
-          console.log("GEtting token index", tokenIndex);
+          console.log("Getting token index", tokenIndex);
           //const tokenId = await readContracts.Worlds.tokenOfOwnerByIndex(address, tokenIndex);
           //const testId = tokenId && balance.toNumber && balance.toNumber();
           console.log("tokenId", tokenIndex);
-          const tokenURI = await mainnetContracts.Worlds.tokenURI(tokenIndex);
-          const tokenOwner = await mainnetContracts.Worlds.ownerOf(tokenIndex);
+          const tokenURI = await readContracts.Seeds.tokenURI(tokenIndex.toString());
+          console.log(tokenURI);
+          const tokenOwner = await readContracts.Seeds.ownerOf(tokenIndex);
           console.log("Owner of token: "+tokenOwner);
           const jsonManifestString = atob(tokenURI.substring(29))
           console.log("jsonManifestString", jsonManifestString);
@@ -232,14 +236,14 @@ function App(props) {
 
     const updateYourCollectibles = async () => {
       const collectibleUpdate = [];
-      for (let tokenIndex = 1; tokenIndex <= totalSupply; tokenIndex++) {
+      for (let tokenIndex = 0; tokenIndex <= totalSupply; tokenIndex++) {
         try {
           console.log("GEtting token index", tokenIndex);
           //const tokenId = await readContracts.Worlds.tokenOfOwnerByIndex(address, tokenIndex);
           //const testId = tokenId && balance.toNumber && balance.toNumber();
           console.log("tokenId", tokenIndex);
-          const tokenURI = await mainnetContracts.Worlds.tokenURI(tokenIndex);
-          const tokenOwner = await mainnetContracts.Worlds.ownerOf(tokenIndex);
+          const tokenURI = await mainnetContracts.Seeds.tokenURI(tokenIndex.toString());
+          const tokenOwner = await mainnetContracts.Seeds.ownerOf(0);
           console.log("Owner of token: "+tokenOwner);
           const jsonManifestString = atob(tokenURI.substring(29))
           console.log("jsonManifestString", jsonManifestString);
@@ -453,12 +457,14 @@ function App(props) {
 								<p id="text01" class="style4">Harvest0rs</p>
 								<h1 id="text69" class="style2">Still WIP</h1>
                 <h1>🚜🚜🚜</h1>
-								<p id="text73" class="style1"><span class="p">The flow to use a `Harvest0r` is:
+								<p id="text73" class="style1"><span class="p"><h2>The flow to use a `Harvest0r` is:</h2>
                     <ol><li>Obtain a `Seeds Access Voucher` NFT</li>
                     <li>Navigate to the `Harvest0rFactory` and either deploy a `Harvest0r` for the token you want to harvest, or find the `Harvest0r` address if already deployed.</li>
                     <li>Access the `sellToken` functionality of the `Harvest0r`-token pair. You will receive a constant `0.0069 ether` per sale. This consumes one charge of the `SEEDS` NFT.</li>
                     <li>Should the charges become depleted you can replenish the NFT's charges by calling `recharge` on the `SEEDS` NFT contract, this costs `0.069 ether` for 9 charges.</li></ol></span><span class="p">
-                  <em>Harvest0r project is a portfolio project by @lourenslinde.</em><br></br><em>The NFT uses a gas efficient implementation of ERC721A from Chira Labs.</em></span><span class="p"><strong>Proudly developed with Scaffold-Eth</strong></span></p>
+                  <em>Harvest0r project is a portfolio project by @lourenslinde.</em><br></br><em>The NFT uses a gas efficient implementation of ERC721A from Chiru Labs.</em></span><span class="p">
+                    <br></br>
+                    <strong>Proudly developed with Scaffold-Eth</strong></span></p>
                   <p><span class="p"><strong><a href="https://optimistic.etherscan.io/address/0x4f7dd11B9c5eE9C79eecfF2127bCFf153e0eA49F#code">Insert Seeds Contract Address</a></strong></span></p>
                   <p><span class="p"><strong><a href="https://optimistic.etherscan.io/address/0xDfDDA54eA89889ca66A7eb4f61C9fA0A635c1218#code">Insert Harvst0r Factory Contract Address</a></strong></span></p>
 							</div>
@@ -478,7 +484,7 @@ function App(props) {
 							<div class="inner" data-onvisible-trigger="1">
                   {userSigner?(
                 <Button type={"primary"} onClick={()=>{
-                  tx( writeContracts.Worlds.mintItem({ value: mintprice.toString()}))
+                  tx( writeContracts.Seeds.mint(1, { value: mintprice.toString()}))
                 }}>MINT FOR 0.069 E</Button>
               ):(
                 <Button type={"primary"} onClick={loadWeb3Modal}>CONNECT WALLET</Button>
@@ -514,10 +520,9 @@ function App(props) {
                         <a href={"https://opensea.io/assets/"+(readContracts && readContracts.Worlds && readContracts.Worlds.address)+"/"+item.id} target="_blank">
                         <img src={item.image} />
                         </a>
-                        <div><em>01100111 01100001 01110110 01101001 01110011 01110100 01101001</em></div>
                         <div>
                         </div>
-                        <p><em>Worlds NFT</em></p>
+                        <p><em>Seeds Access Voucher NFT</em></p>
                       </Card>
 
                       
