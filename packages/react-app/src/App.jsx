@@ -24,6 +24,8 @@ import {
   NetworkDisplay,
   FaucetHint,
   NetworkSwitch,
+  AddressInput,
+  Address,
 } from "./components";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
@@ -32,6 +34,7 @@ import deployedContracts from "./contracts/hardhat_contracts.json";
 import { getRPCPollTime, Transactor, Web3ModalSetup } from "./helpers";
 import { Home, Seeds, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
+import { ZERO_ADDRESS } from "./components/Swap";
 
 const { ethers } = require("ethers");
 /*
@@ -180,6 +183,8 @@ function App(props) {
   const purpose = useContractReader(readContracts, "YourContract", "purpose", [], localProviderPollingTime);
   let seedsSup = useContractReader(readContracts, "Seeds", "totalSupply",[], localProviderPollingTime)
   console.log("Seedsup: ",seedsSup);
+
+  //const harvestorFactory = useContractReader(readContracts, "Harvest0rFactory", localProviderPollingTime)
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:", addressFromENS)
@@ -273,6 +278,18 @@ function App(props) {
     updateYourCollectibles();
   }, [address, yourBalance]);
 
+  const [toAddress, setToAddress] = useState();
+  const [harvestorAddress, setHarvestorAddress] = useState();
+
+  const updateHarvestor = async (target) => {
+    let addr;
+      try {
+        addr = await readContracts.Harvest0rFactory.findHarvestor(target);
+      } catch (e) {
+        console.log(e);
+      }
+    setHarvestorAddress(addr);
+  };
   //
   // 🧫 DEBUG 👨🏻‍🔬
   //
@@ -451,20 +468,21 @@ function App(props) {
           />
         </Route>
         <Route exact path="/seeds">
-        <hr/>
 						<div class="wrapper">
 							<div class="inner" data-onvisible-trigger="1">
-								<p id="text01" class="style4">Harvest0rs</p>
-								<h1 id="text69" class="style2">Still WIP</h1>
-                <h1>🚜🚜🚜</h1>
-								<p id="text73" class="style1"><span class="p"><h2>The flow to use a `Harvest0r` is:</h2>
-                    <ol><li>Obtain a `Seeds Access Voucher` NFT</li>
-                    <li>Navigate to the `Harvest0rFactory` and either deploy a `Harvest0r` for the token you want to harvest, or find the `Harvest0r` address if already deployed.</li>
-                    <li>Access the `sellToken` functionality of the `Harvest0r`-token pair. You will receive a constant `0.0069 ether` per sale. This consumes one charge of the `SEEDS` NFT.</li>
-                    <li>Should the charges become depleted you can replenish the NFT's charges by calling `recharge` on the `SEEDS` NFT contract, this costs `0.069 ether` for 9 charges.</li></ol></span><span class="p">
-                  <em>Harvest0r project is a portfolio project by @lourenslinde.</em><br></br><em>The NFT uses a gas efficient implementation of ERC721A from Chiru Labs.</em></span><span class="p">
+								<h1>Harvestors</h1>
+                <h1>🚜 🚜 🚜</h1>
+								<p><h2>The flow to use a `Harvest0r` is:</h2></p>
+                    <p><strong>Step 1: </strong>Obtain a `Seeds Access Voucher` NFT</p>
+                    <p><strong>Step 2: </strong>Navigate to the `Harvest0rFactory` and either deploy a `Harvest0r` for the token you want to harvest, or find the `Harvest0r` address if already deployed.</p>
+                    <p><strong>Step 3: </strong>Access the `sellToken` functionality of the `Harvest0r`-token pair. You will receive a constant `0.0069 ether` per sale. This consumes one charge of the `SEEDS` NFT.</p>
+                    <p><strong>Step 4: </strong>Should the charges become depleted you can replenish the NFT's charges by calling `recharge` on the `SEEDS` NFT contract, this costs `0.069 ether` for 9 charges.</p>
                     <br></br>
-                    <strong>Proudly developed with Scaffold-Eth</strong></span></p>
+                  <p><em>Harvest0r project is a portfolio project by @lourenslinde.</em></p>
+                  <br></br>
+                  <em>The NFT uses a gas efficient implementation of ERC721A from Chiru Labs.</em>
+                    <br></br>
+                    <p><strong>Proudly developed with Scaffold-Eth</strong></p>
                   <p><span class="p"><strong><a href="https://optimistic.etherscan.io/address/0x4f7dd11B9c5eE9C79eecfF2127bCFf153e0eA49F#code">Insert Seeds Contract Address</a></strong></span></p>
                   <p><span class="p"><strong><a href="https://optimistic.etherscan.io/address/0xDfDDA54eA89889ca66A7eb4f61C9fA0A635c1218#code">Insert Harvst0r Factory Contract Address</a></strong></span></p>
 							</div>
@@ -548,6 +566,21 @@ function App(props) {
           />
         </Route>
         <Route path="/harvestor">
+          <br></br><Row><Card style={{ width: 300}}></Card>
+          <Card title="Enter the Harvest0r Address" style={{ width: 500 }} class=".mx-auto">
+            <p><AddressInput
+                autoFocus
+                ensProvider={mainnetProvider}
+                placeholder="Enter address"
+                value={toAddress}
+                onChange={setToAddress}>
+            </AddressInput></p>
+            <p><Button type={"primary"} onClick={()=>{
+              updateHarvestor(toAddress);
+              console.log(harvestorAddress);
+                }}>Load Harvest0r</Button></p>
+                <p><Address value={harvestorAddress}></Address></p>
+          </Card></Row>
           {/*
             <Contract
               name="UNI"
@@ -558,6 +591,20 @@ function App(props) {
               blockExplorer="https://etherscan.io/"
             />
             */}
+            <br></br>
+            <hr></hr>
+            { harvestorAddress? (
+        <Contract             
+            name="Harvest0r"
+            show={["sellToken"]}
+            price={price}
+            signer={userSigner}
+            provider={localProvider}
+            address={harvestorAddress}
+            blockExplorer={blockExplorer}
+            contractConfig={contractConfig}></Contract>
+            ) : ("") }
+
         </Route>
         <Route path="/subgraph">
           <Subgraph
