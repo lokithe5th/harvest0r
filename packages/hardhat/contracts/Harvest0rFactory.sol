@@ -71,9 +71,7 @@ contract Harvest0rFactory is IHarvest0rFactory, Ownable {
    *                         Set up                                 *
    ******************************************************************/
 
-  /// @notice Sets up the Harvestor Factory
-  /// @param implementation The address of the MasterCopy for Harvestors
-  /// @param seeds The address for the `Seeds Access Voucher` NFTs
+  /// @inheritdoc IHarvest0rFactory
   function setup(address implementation, address seeds) external {
     harvestorMaster = implementation;
     seedsNft = seeds;
@@ -105,15 +103,12 @@ contract Harvest0rFactory is IHarvest0rFactory, Ownable {
    *                       VIEW FUNCTIONS                           *
    ******************************************************************/
 
-  /// @notice Returns the implementation address
-  /// @return address The address of the master copy (implementation contract)
+  /// @inheritdoc IHarvest0rFactory
   function viewImplementation() external view returns (address) {
     return harvestorMaster;
   }
 
-  /// @notice Returns the harvestor for a given token address
-  /// @param token The token address
-  /// @return address The address of the Harvestor for this token
+  /// @inheritdoc IHarvest0rFactory
   function findHarvestor(address token) external view returns (address) {
     return tokenHarvestors[token];
   }

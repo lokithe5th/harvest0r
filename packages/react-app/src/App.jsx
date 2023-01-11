@@ -557,6 +557,7 @@ function App(props) {
         <Route path="/harvestorFactory">
         <Contract
             name="Harvest0rFactory"
+            show={["findHarvestor", "isHarvestor", "newHarvestor"]}
             price={price}
             signer={userSigner}
             provider={localProvider}
@@ -567,7 +568,7 @@ function App(props) {
         </Route>
         <Route path="/harvestor">
           <br></br><Row><Card style={{ width: 300}}></Card>
-          <Card title="Enter the Harvest0r Address" style={{ width: 500 }} class=".mx-auto">
+          <Card title="Enter the Address of the token you want to harvest" style={{ width: 500 }} class=".mx-auto">
             <p><AddressInput
                 autoFocus
                 ensProvider={mainnetProvider}
@@ -603,7 +604,9 @@ function App(props) {
             address={harvestorAddress}
             blockExplorer={blockExplorer}
             contractConfig={contractConfig}></Contract>
-            ) : ("") }
+            ) : (
+            <p></p>
+            ) }
 
         </Route>
         <Route path="/subgraph">
