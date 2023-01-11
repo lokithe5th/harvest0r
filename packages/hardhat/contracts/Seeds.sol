@@ -87,9 +87,10 @@ contract Seeds is ISeeds, ERC721A, Ownable {
   IHarvest0rFactory private factory;
 
   /// The strings required for SVG Generation
-  string[3] internal svgParts = [
-        '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 400"><style>.base { fill: white; font-family: monospace; font-size: 18px; }</style><rect width="100%" height="100%" fill="black" /><text x="10" y="20" class="base">',
-        '</text><text x="10" y="40" class="base">',
+  string[4] internal svgParts = [
+        '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: monospace; font-size: 18px; }</style><rect width="100%" height="100%" fill="black" /><text x="50" y="100" class="base">',
+        '</text><text x="50" y="150" class="base">',
+        unicode"🌱",
         '</text></svg>'
   ];
 
@@ -138,7 +139,13 @@ contract Seeds is ISeeds, ERC721A, Ownable {
   /// @inheritdoc	ISeeds
   function generateSVGofTokenById(uint256 tokenId) public view returns (string memory svg) {
     TokenOwnership memory unpackedData = _ownershipAt(tokenId);
-    svg = string.concat(svgParts[0], 'Charges: ', (uint256(unpackedData.extraData)).toString(), svgParts[1], svgParts[2]);
+    uint256 charges = unpackedData.extraData;
+    string memory seeds;
+    for (uint256 i; i < charges; i++) {
+      seeds = string.concat(seeds, svgParts[2]);
+    }
+
+    svg = string.concat(svgParts[0], 'Charges: ', (charges).toString(), svgParts[1], seeds, svgParts[3]);
   }
 
   /******************************************************************
