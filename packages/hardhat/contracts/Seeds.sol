@@ -88,7 +88,7 @@ contract Seeds is ISeeds, ERC721A, Ownable {
 
   /// The strings required for SVG Generation
   string[4] internal svgParts = [
-        '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: monospace; font-size: 18px; }</style><rect width="100%" height="100%" fill="black" /><text x="50" y="100" class="base">',
+        '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base {fill:white;font-family:monospace;font-size: 18px;}</style><rect width="100%" height="100%" fill="black" /><text x="50" y="100" class="base">',
         '</text><text x="50" y="150" class="base">',
         unicode"🌱",
         '</text></svg>'
