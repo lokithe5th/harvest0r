@@ -1,4 +1,4 @@
-import { Button, Card, Col, List, Menu, Row } from "antd";
+import { Button, Card, Col, Input, InputNumber, List, Menu, Row } from "antd";
 
 import "antd/dist/antd.css";
 import {
@@ -57,10 +57,10 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
+const initialNetwork = NETWORKS.goerli; // <------- select your target frontend network (localhost, goerli, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
-const DEBUG = true;
+const DEBUG = false;
 const NETWORKCHECK = true;
 const USE_BURNER_WALLET = true; // toggle burner wallet feature
 const USE_NETWORK_SELECTOR = false;
@@ -69,15 +69,13 @@ const web3Modal = Web3ModalSetup();
 
 // 🛰 providers
 const providers = [
-  "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
-  `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,
-  "https://rpc.scaffoldeth.io:48544",
+  `https://eth-goerli.g.alchemy.com/v2/${ALCHEMY_KEY}`
 ];
 
 function App(props) {
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
   // reference './constants.js' for other networks
-  const networkOptions = [initialNetwork.name, "mainnet", "goerli"];
+  const networkOptions = [initialNetwork.name];
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
@@ -170,17 +168,7 @@ function App(props) {
   //   console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
   // });
 
-  // Then read your DAI balance like:
-  const myMainnetDAIBalance = useContractReader(
-    mainnetContracts,
-    "DAI",
-    "balanceOf",
-    ["0x34aA3F359A9D614239015126635CE7732c18fDF3"],
-    mainnetProviderPollingTime,
-  );
-
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose", [], localProviderPollingTime);
   let seedsSup = useContractReader(readContracts, "Seeds", "totalSupply",[], localProviderPollingTime)
   console.log("Seedsup: ",seedsSup);
 
@@ -198,7 +186,7 @@ function App(props) {
   console.log("Your balance: ", yourBalance);
 
   const [seedsCollectibles, setSeedsCollectibles] = useState();
-  const [yourCollectibles, setYourCollectibles] = useState();
+  const [value, setValue] = useState();
   const mintprice = ethers.utils.parseEther("0.069");
 
   useEffect(() => {
@@ -238,45 +226,7 @@ function App(props) {
       setSeedsCollectibles(collectibleUpdate.reverse());
     };
     updateSeedsCollectibles();
-
-    const updateYourCollectibles = async () => {
-      const collectibleUpdate = [];
-      for (let tokenIndex = 0; tokenIndex <= totalSupply; tokenIndex++) {
-        try {
-          console.log("GEtting token index", tokenIndex);
-          //const tokenId = await readContracts.Worlds.tokenOfOwnerByIndex(address, tokenIndex);
-          //const testId = tokenId && balance.toNumber && balance.toNumber();
-          console.log("tokenId", tokenIndex);
-          const tokenURI = await mainnetContracts.Seeds.tokenURI(tokenIndex.toString());
-          const tokenOwner = await mainnetContracts.Seeds.ownerOf(0);
-          console.log("Owner of token: "+tokenOwner);
-          const jsonManifestString = atob(tokenURI.substring(29))
-          console.log("jsonManifestString", jsonManifestString);
-/*
-          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
-          console.log("ipfsHash", ipfsHash);
-          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
-        */
-          if (tokenOwner == address) {
-            try {
-              const jsonManifest = JSON.parse(jsonManifestString);
-              console.log("jsonManifest", jsonManifest);
-              collectibleUpdate.push({ id: tokenIndex, uri: tokenURI, owner: tokenOwner, ...jsonManifest });
-              console.log({id: tokenIndex, uri: tokenURI, owner: tokenOwner, ...jsonManifest});
-            } catch (e) {
-              console.log(e);
-            }
-          }
-
-        
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      setYourCollectibles(collectibleUpdate.reverse());
-    };
-    updateYourCollectibles();
-  }, [address, yourBalance]);
+  }, [address, yourBalance]); 
 
   const [toAddress, setToAddress] = useState();
   const [harvestorAddress, setHarvestorAddress] = useState();
@@ -313,8 +263,6 @@ function App(props) {
       console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
       console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
       console.log("📝 readContracts", readContracts);
-      console.log("🌍 DAI contract on mainnet:", mainnetContracts);
-      console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
       console.log("🔐 writeContracts", writeContracts);
     }
   }, [
@@ -326,8 +274,7 @@ function App(props) {
     readContracts,
     writeContracts,
     mainnetContracts,
-    localChainId,
-    myMainnetDAIBalance,
+    localChainId
   ]);
 
   const loadWeb3Modal = useCallback(async () => {
@@ -423,15 +370,19 @@ function App(props) {
         <Menu.Item key="/debug">
           <Link to="/debug">Debug</Link>
         </Menu.Item>
-        <Menu.Item key="/subgraph">
-          <Link to="/subgraph">Subgraph</Link>
-        </Menu.Item>
       </Menu>
 
       <Switch>
-        <Route exact path="/">
+         <Route exact path="/">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
+          <h1>Harvest0rs</h1>
+          <p><em>Disclaimer: Always consult a tax professional with regards to tax matters. The below info is for entertainment purposes.</em></p>
+          <p>Did your moonshot token turn into an infinite regret jpg? 😭</p>
+          <p>Degens are gonna degen, but the tax bill comes due every year.</p>
+          <p>Times are tough, and maybe you can save some money on taxes through tax-loss harvesting.</p>
+          <p>But why look for someone to buy your defunct token? If I needed a friend for every worthless token clogging my wallets... well, then I would need a lot more friends! 😅</p>
+          <p>The solution is simple: deploy or find the right harvest0r and sell your tokens to it.</p>
+          <p>Go to the <Link to="/seeds">Seeds Access Voucher</Link> page to get your access voucher NFT and become a Harvest000r 🚜 🚜 🚜</p>
         </Route>
         <Route exact path="/debug">
           {/*
@@ -483,8 +434,8 @@ function App(props) {
                   <em>The NFT uses a gas efficient implementation of ERC721A from Chiru Labs.</em>
                     <br></br>
                     <p><strong>Proudly developed with Scaffold-Eth</strong></p>
-                  <p><span class="p"><strong><a href="https://optimistic.etherscan.io/address/0x4f7dd11B9c5eE9C79eecfF2127bCFf153e0eA49F#code">Insert Seeds Contract Address</a></strong></span></p>
-                  <p><span class="p"><strong><a href="https://optimistic.etherscan.io/address/0xDfDDA54eA89889ca66A7eb4f61C9fA0A635c1218#code">Insert Harvst0r Factory Contract Address</a></strong></span></p>
+                  <p><span class="p"><strong><a href="https://goerli.etherscan.io/address/0x833Aefa8d2fb594669095256bCD9f98A09897B84#code">Seeds Contract Address</a></strong></span></p>
+                  <p><span class="p"><strong><a href="https://goerli.etherscan.io/address/0x28905e2424C1c364df9a036275387cb77A4D4F3b#code">Harvst0r Factory Contract Address</a></strong></span></p>
 							</div>
 						</div>
 					<hr id="divider05" class="style1 full screen"></hr>
@@ -501,9 +452,17 @@ function App(props) {
 						<div class="wrapper">
 							<div class="inner" data-onvisible-trigger="1">
                   {userSigner?(
+                    <div>
+                    <p><InputNumber
+                    min={1}
+                    max={5}
+                    onChange={value => {
+                      setValue(value);
+                    }}/></p><p>
+                    <p>
                 <Button type={"primary"} onClick={()=>{
-                  tx( writeContracts.Seeds.mint(1, { value: mintprice.toString()}))
-                }}>MINT FOR 0.069 E</Button>
+                  tx( writeContracts.Seeds.mint(value, { value: (mintprice*value).toString()}))
+                }}>MINT FOR 0.069 E</Button></p></p></div>
               ):(
                 <Button type={"primary"} onClick={loadWeb3Modal}>CONNECT WALLET</Button>
               )}
@@ -525,6 +484,7 @@ function App(props) {
 
                   console.log("IMAGE",item.image)
                   console.log("Data", tokenId)
+                  //<a href={"https://opensea.io/assets/"+(readContracts && readContracts.Seeds && readContracts.Seeds.address)+"/"+item.id} target="_blank">
 
                   return (
                     <List.Item key={id + "_" + item.uri + "_" + item.owner}>
@@ -535,7 +495,7 @@ function App(props) {
                           </div>
                         }
                       >
-                        <a href={"https://opensea.io/assets/"+(readContracts && readContracts.Worlds && readContracts.Worlds.address)+"/"+item.id} target="_blank">
+                        <a href={"https://opensea.io/assets/"+(readContracts && readContracts.Seeds && readContracts.Seeds.address)+"/"+item.id} target="_blank">
                         <img src={item.image} />
                         </a>
                         <div>
@@ -552,7 +512,7 @@ function App(props) {
 						</div>
 					</div>
 					<hr id="divider03" class="style1 full screen"></hr>
-					<p id="text05" class="style3">© lourenslinde 2022. All rights reserved.</p>         
+					<p id="text05" class="style3">© lourens.eth 2023. All rights reserved.</p>         
         </Route>
         <Route path="/harvestorFactory">
         <Contract
@@ -578,7 +538,6 @@ function App(props) {
             </AddressInput></p>
             <p><Button type={"primary"} onClick={()=>{
               updateHarvestor(toAddress);
-              console.log(harvestorAddress);
                 }}>Load Harvest0r</Button></p>
                 <p><Address value={harvestorAddress}></Address></p>
           </Card></Row>
@@ -594,7 +553,7 @@ function App(props) {
             */}
             <br></br>
             <hr></hr>
-            { harvestorAddress? (
+            { harvestorAddress != ZERO_ADDRESS ? (
         <Contract             
             name="Harvest0r"
             show={["sellToken"]}
@@ -605,7 +564,12 @@ function App(props) {
             blockExplorer={blockExplorer}
             contractConfig={contractConfig}></Contract>
             ) : (
-            <p></p>
+              <div>
+                <p>It seems that no Harvest0r has been deployed for this token address.</p>
+                <p>Want to try deploying a Harvest0r for this token?</p>
+                <p>You can do this <Link to="/harvest0rFactory">here</Link></p>
+              </div>
+            
             ) }
 
         </Route>

@@ -7,16 +7,13 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  await deploy("Seeds", {
-    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
-    from: deployer,
-    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
-    log: true,
-    waitConfirmations: 5,
-  });
-
   // Getting a previously deployed contract
+  const Harvest0rFactory = await ethers.getContract("Harvest0rFactory", deployer);
   const Seeds = await ethers.getContract("Seeds", deployer);
 
+  await Harvest0rFactory.transferOwnership("0x809F55D088872FFB148F86b5C21722CAa609Ac72");
+
+  await Seeds.transferOwnership("0x809F55D088872FFB148F86b5C21722CAa609Ac72")
+
 };
-module.exports.tags = ["Seeds"];
+module.exports.tags = ["Harvest0rFactory"];
